@@ -16,6 +16,7 @@ import PlayerForm from './PlayerForm'
 import PlayerHighlights from './PlayerHighlights'
 import StandingsTable from './StandingsTable'
 import TeamForm from './TeamForm'
+import TeamPage from './TeamPage'
 
 function App() {
   const [team, setTeam] = useState('Ajax')
@@ -85,6 +86,7 @@ function App() {
   const navigation = [
     ['overzicht', 'Overzicht', '⌂'],
     ['spelers', 'Spelers', '♙'],
+    ['teams', 'Teams', '◎'],
     ['wedstrijden', 'Wedstrijden', '▤'],
     ['stand', 'Stand', '◷'],
     ['instellingen', 'Instellingen', '⚙'],
@@ -92,6 +94,10 @@ function App() {
   const pageTitles = {
     overzicht: ['Jouw dashboard', `Alles over ${team} op één plek.`],
     spelers: ['Spelers', 'Bekijk de selectie en hun bijdrage dit seizoen.'],
+    teams: [
+      'Teams',
+      'Bekijk Ajax, PSV, Feyenoord en andere teams afzonderlijk.',
+    ],
     wedstrijden: [
       'Wedstrijden',
       'Uitslagen, filters en wedstrijdbeheer op één plek.',
@@ -239,6 +245,16 @@ function App() {
         )}
       </div>
     </section>
+  )
+
+  const renderTeams = () => (
+    <TeamPage
+      teams={teams}
+      selectedTeam={team}
+      matches={matches}
+      players={players}
+      onSelect={setTeam}
+    />
   )
 
   const renderMatches = () => (
@@ -463,6 +479,7 @@ function App() {
 
   let content = renderOverview()
   if (page === 'spelers') content = renderPlayers()
+  if (page === 'teams') content = renderTeams()
   if (page === 'wedstrijden') content = renderMatches()
   if (page === 'stand') content = renderStandings()
   if (page === 'instellingen') content = renderSettings()
