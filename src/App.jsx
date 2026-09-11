@@ -1,169 +1,54 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import './App.css'
-
-const teams = ['Ajax', 'PSV', 'Feyenoord']
-
-const matches = [
-  {
-    id: 1,
-    date: '12 mei',
-    home: 'Ajax',
-    away: 'PSV',
-    homeScore: 3,
-    awayScore: 1,
-  },
-  {
-    id: 2,
-    date: '5 mei',
-    home: 'Ajax',
-    away: 'Feyenoord',
-    homeScore: 2,
-    awayScore: 2,
-  },
-  {
-    id: 3,
-    date: '28 apr',
-    home: 'Feyenoord',
-    away: 'PSV',
-    homeScore: 4,
-    awayScore: 1,
-  },
-]
-
-const players = [
-  { name: 'Brian Brobbey', position: 'Aanvaller', number: 9, goals: 18 },
-  { name: 'Kenneth Taylor', position: 'Middenveld', number: 8, goals: 7 },
-  { name: 'Jorrel Hato', position: 'Verdediger', number: 4, goals: 2 },
-  { name: 'Remko Pasveer', position: 'Doelman', number: 1, goals: 0 },
-]
-
-function getStats(team) {
-  return matches
-    .filter(({ home, away }) => home === team || away === team)
-    .reduce(
-      (summary, { home, homeScore, awayScore }) => {
-        const isHome = home === team
-        const teamScore = isHome ? homeScore : awayScore
-        const opponentScore = isHome ? awayScore : homeScore
-
-        summary.played += 1
-        summary.goals += teamScore
-        if (teamScore > opponentScore) {
-          summary.wins += 1
-          summary.points += 3
-        } else if (teamScore === opponentScore) {
-          summary.draws += 1
-          summary.points += 1
-        } else {
-          summary.losses += 1
-        }
-        return summary
-      },
-      { played: 0, wins: 0, draws: 0, losses: 0, goals: 0, points: 0 },
-    )
-}
-
-function getResult(match, team) {
-  if (match.home !== team && match.away !== team) return 'Neutraal'
-  const teamScore = match.home === team ? match.homeScore : match.awayScore
-  const opponentScore = match.home === team ? match.awayScore : match.homeScore
-  if (teamScore > opponentScore) return 'Winst'
-  if (teamScore === opponentScore) return 'Gelijkspel'
-  return 'Verlies'
-}
-
-function ResultBadge({ result }) {
-  return (
-    <span
-      className={`result-badge result-${result.toLowerCase().replace(' ', '-')}`}
-    >
-      {result}
-    </span>
-  )
-}
-
-function StatsGrid({ stats, team }) {
-  const items = [
-    ['Punten', stats.points, `uit ${stats.played} wedstrijden`],
-    ['Overwinningen', stats.wins, `van ${stats.played}`],
-    ['Doelpunten', stats.goals, `voor ${team}`],
-    [
-      'Vorm',
-      `${stats.wins}-${stats.draws}-${stats.losses}`,
-      'winst - gelijk - verlies',
-    ],
-  ]
-
-  return (
-    <section className="stats-grid" aria-label={`Statistieken van ${team}`}>
-      {items.map(([label, value, note], index) => (
-        <div
-          className={index === 0 ? 'stat-card stat-card-featured' : 'stat-card'}
-          key={label}
-        >
-          <span className="stat-label">{label}</span>
-          <strong>{value}</strong>
-          <span className="stat-note">{note}</span>
-        </div>
-      ))}
-    </section>
-  )
-}
-
-function MatchTable({ visibleMatches, team }) {
-  return (
-    <div
-      className="table-wrap"
-      role="region"
-      aria-label="Wedstrijduitslagen, horizontaal scrollbaar"
-      tabIndex="0"
-    >
-      <table>
-        <caption className="sr-only">Wedstrijduitslagen</caption>
-        <thead>
-          <tr>
-            <th scope="col">Datum</th>
-            <th scope="col">Thuis</th>
-            <th scope="col">Stand</th>
-            <th scope="col">Uit</th>
-            <th scope="col">Resultaat</th>
-          </tr>
-        </thead>
-        <tbody>
-          {visibleMatches.map((match) => (
-            <tr key={match.id}>
-              <td className="date-cell">{match.date}</td>
-              <td className={match.home === team ? 'team-highlight' : ''}>
-                {match.home}
-              </td>
-              <td className="score">
-                {match.homeScore} - {match.awayScore}
-              </td>
-              <td className={match.away === team ? 'team-highlight' : ''}>
-                {match.away}
-              </td>
-              <td>
-                <ResultBadge result={getResult(match, team)} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
-}
+import { matches as initialMatches, players, teams } from './data'
+import { getResult, getStats } from './stats'
+import StatsGrid from './StatsGrid'
+import MatchTable from './MatchTable'
+import MatchDetail from './MatchDetail'
+import MatchForm from './MatchForm'
+import PlayerModal from './PlayerModal'
 
 function App() {
   const [team, setTeam] = useState('Ajax')
+  const [matches, setMatches] = useState(initialMatches)
   const [page, setPage] = useState('overzicht')
   const [showTeamMatchesOnly, setShowTeamMatchesOnly] = useState(true)
   const [notifications, setNotifications] = useState(true)
   const [compactView, setCompactView] = useState(false)
+  const [selectedPlayer, setSelectedPlayer] = useState(null)
+  const [playerSearch, setPlayerSearch] = useState('')
+  const [playerPosition, setPlayerPosition] = useState('Alle')
+  const [selectedMatch, setSelectedMatch] = useState(null)
+  const [editingMatch, setEditingMatch] = useState(null)
+  const [showMatchForm, setShowMatchForm] = useState(false)
+  const [matchTeamFilter, setMatchTeamFilter] = useState('Alle teams')
+  const [matchResultFilter, setMatchResultFilter] = useState('Alle resultaten')
+  const [matchDateFilter, setMatchDateFilter] = useState('')
+  const closeButtonRef = useRef(null)
   const teamMatches = matches.filter(
     ({ home, away }) => home === team || away === team,
   )
-  const stats = getStats(team)
-  const visibleMatches = showTeamMatchesOnly ? teamMatches : matches
+  const stats = getStats(matches, team)
+  const filteredMatches = matches.filter((match) => {
+    const result = getResult(match, team)
+    const matchesSelectedTeam = !showTeamMatchesOnly || match.home === team || match.away === team
+    const matchesTeam = matchesSelectedTeam && (matchTeamFilter === 'Alle teams' || match.home === matchTeamFilter || match.away === matchTeamFilter)
+    const matchesResult =
+      matchResultFilter === 'Alle resultaten' || result === matchResultFilter
+    const matchesDate =
+      !matchDateFilter ||
+      match.date.toLowerCase().includes(matchDateFilter.toLowerCase())
+    return matchesTeam && matchesResult && matchesDate
+  })
+  const filteredPlayers = players.filter((player) => {
+    const matchesSearch = player.name
+      .toLowerCase()
+      .includes(playerSearch.toLowerCase())
+    return (
+      matchesSearch &&
+      (playerPosition === 'Alle' || player.position === playerPosition)
+    )
+  })
 
   const navigation = [
     ['overzicht', 'Overzicht', '⌂'],
@@ -172,7 +57,6 @@ function App() {
     ['wedstrijden', 'Wedstrijden', '▤'],
     ['instellingen', 'Instellingen', '⚙'],
   ]
-
   const pageTitles = {
     overzicht: ['Jouw dashboard', `Alles over ${team} op één plek.`],
     spelers: ['Spelers', 'Bekijk de selectie en hun bijdrage dit seizoen.'],
@@ -183,149 +67,276 @@ function App() {
     ],
     instellingen: ['Instellingen', 'Pas jouw voetbaltracker aan.'],
   }
-
-  const renderPage = () => {
-    if (page === 'spelers') {
-      return (
-        <section className="page-content" aria-labelledby="page-heading">
-          <div className="player-grid">
-            {players.map((player) => (
-              <article className="player-card" key={player.name}>
-                <div className="player-number">{player.number}</div>
-                <div>
-                  <p className="section-kicker">{player.position}</p>
-                  <h2>{player.name}</h2>
-                  <p className="player-stat">
-                    {player.goals} doelpunten dit seizoen
-                  </p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
+  const toggleMatches = () => setShowTeamMatchesOnly((current) => !current)
+  const saveMatch = (match) => {
+    if (match.id) {
+      setMatches((current) =>
+        current.map((item) => (item.id === match.id ? match : item)),
       )
+    } else {
+      setMatches((current) => [...current, { ...match, id: Date.now() }])
     }
-
-    if (page === 'resultaten' || page === 'wedstrijden') {
-      return (
-        <section className="page-content" aria-labelledby="page-heading">
-          {page === 'resultaten' && <StatsGrid stats={stats} team={team} />}
-          <div className="section-heading section-heading-with-control">
-            <div>
-              <p className="section-kicker">
-                {page === 'resultaten' ? 'Vorm' : 'Historie'}
-              </p>
-              <h2>
-                {page === 'resultaten'
-                  ? `Resultaten van ${team}`
-                  : 'Wedstrijdschema'}
-              </h2>
-            </div>
-            <button
-              className="filter-button"
-              type="button"
-              aria-pressed={showTeamMatchesOnly}
-              onClick={() => setShowTeamMatchesOnly((current) => !current)}
-            >
-              {showTeamMatchesOnly ? 'Alle wedstrijden' : `Alleen ${team}`}
-            </button>
-          </div>
-          <MatchTable visibleMatches={visibleMatches} team={team} />
-        </section>
-      )
-    }
-
-    if (page === 'instellingen') {
-      return (
-        <section
-          className="page-content settings-list"
-          aria-labelledby="page-heading"
-        >
-          <label className="setting-row">
-            <span>
-              <strong>Favoriet team</strong>
-              <small>Gebruik dit team in je dashboard.</small>
-            </span>
-            <select
-              value={team}
-              onChange={(event) => setTeam(event.target.value)}
-            >
-              {teams.map((teamName) => (
-                <option key={teamName}>{teamName}</option>
-              ))}
-            </select>
-          </label>
-          <label className="setting-row">
-            <span>
-              <strong>Wedstrijdmeldingen</strong>
-              <small>Ontvang een herinnering voor nieuwe uitslagen.</small>
-            </span>
-            <input
-              type="checkbox"
-              checked={notifications}
-              onChange={(event) => setNotifications(event.target.checked)}
-            />
-          </label>
-          <label className="setting-row">
-            <span>
-              <strong>Compacte weergave</strong>
-              <small>Toon meer informatie op kleinere schermen.</small>
-            </span>
-            <input
-              type="checkbox"
-              checked={compactView}
-              onChange={(event) => setCompactView(event.target.checked)}
-            />
-          </label>
-        </section>
-      )
-    }
-
-    return (
-      <section className="page-content" aria-labelledby="page-heading">
-        <section className="team-panel" aria-labelledby="team-heading">
-          <div>
-            <p className="section-kicker">Favoriet team</p>
-            <h2 id="team-heading">{team}</h2>
-          </div>
-          <div
-            className="team-picker"
-            role="group"
-            aria-label="Kies je favoriete team"
-          >
-            {teams.map((teamName) => (
-              <button
-                className={
-                  teamName === team ? 'team-button is-selected' : 'team-button'
-                }
-                key={teamName}
-                type="button"
-                aria-pressed={teamName === team}
-                onClick={() => setTeam(teamName)}
-              >
-                {teamName}
-              </button>
-            ))}
-          </div>
-        </section>
-        <StatsGrid stats={stats} team={team} />
-        <div className="section-heading section-heading-with-control">
-          <div>
-            <p className="section-kicker">Resultaten</p>
-            <h2>Laatste wedstrijden</h2>
-          </div>
-          <button
-            className="filter-button"
-            type="button"
-            onClick={() => setPage('resultaten')}
-          >
-            Bekijk alles
-          </button>
-        </div>
-        <MatchTable visibleMatches={teamMatches.slice(0, 2)} team={team} />
-      </section>
-    )
+    setEditingMatch(null)
+    setShowMatchForm(false)
   }
+  const deleteMatch = (match) => {
+    if (
+      window.confirm(
+        `Weet je zeker dat je ${match.home} - ${match.away} wilt verwijderen?`,
+      )
+    ) {
+      setMatches((current) => current.filter((item) => item.id !== match.id))
+    }
+  }
+
+  const renderPlayers = () => (
+    <section className="page-content" aria-labelledby="page-heading">
+      <div className="player-controls">
+        <label>
+          <span className="sr-only">Zoek een speler</span>
+          <input
+            type="search"
+            placeholder="Zoek een speler..."
+            value={playerSearch}
+            onChange={(event) => setPlayerSearch(event.target.value)}
+          />
+        </label>
+        <label>
+          <span className="sr-only">Filter op positie</span>
+          <select
+            value={playerPosition}
+            onChange={(event) => setPlayerPosition(event.target.value)}
+          >
+            <option>Alle</option>
+            <option>Aanvaller</option>
+            <option>Middenveld</option>
+            <option>Verdediger</option>
+            <option>Doelman</option>
+          </select>
+        </label>
+      </div>
+      <div className="player-grid">
+        {filteredPlayers.length ? (
+          filteredPlayers.map((player) => (
+            <button
+              className="player-card"
+              key={player.name}
+              type="button"
+              aria-label={`Bekijk statistieken van ${player.name}`}
+              onClick={() => setSelectedPlayer(player)}
+            >
+              <div className="player-number">{player.number}</div>
+              <div>
+                <p className="section-kicker">{player.position}</p>
+                <h2>{player.name}</h2>
+                <p className="player-stat">
+                  {player.goals} doelpunten dit seizoen
+                </p>
+              </div>
+            </button>
+          ))
+        ) : (
+          <p>Geen spelers gevonden.</p>
+        )}
+      </div>
+    </section>
+  )
+
+  const renderMatches = () => (
+    <section className="page-content" aria-labelledby="page-heading">
+      {page === 'resultaten' && <StatsGrid stats={stats} team={team} />}
+      <div className="match-toolbar">
+        <button
+          className="primary-button"
+          type="button"
+          onClick={() => {
+            setEditingMatch(null)
+            setShowMatchForm(true)
+          }}
+        >
+          + Wedstrijd toevoegen
+        </button>
+        <label>
+          Team
+          <select
+            value={matchTeamFilter}
+            onChange={(event) => setMatchTeamFilter(event.target.value)}
+          >
+            <option>Alle teams</option>
+            {teams.map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Resultaat
+          <select
+            value={matchResultFilter}
+            onChange={(event) => setMatchResultFilter(event.target.value)}
+          >
+            <option>Alle resultaten</option>
+            <option>Winst</option>
+            <option>Gelijkspel</option>
+            <option>Verlies</option>
+            <option>Neutraal</option>
+          </select>
+        </label>
+        <label>
+          Datum
+          <input
+            type="search"
+            placeholder="bijv. mei"
+            value={matchDateFilter}
+            onChange={(event) => setMatchDateFilter(event.target.value)}
+          />
+        </label>
+      </div>
+      <div className="section-heading section-heading-with-control">
+        <div>
+          <p className="section-kicker">
+            {page === 'resultaten' ? 'Vorm' : 'Historie'}
+          </p>
+          <h2>
+            {page === 'resultaten'
+              ? `Resultaten van ${team}`
+              : 'Wedstrijdschema'}
+          </h2>
+        </div>
+        <button
+          className="filter-button"
+          type="button"
+          aria-pressed={showTeamMatchesOnly}
+          onClick={toggleMatches}
+        >
+          {showTeamMatchesOnly ? 'Alle wedstrijden' : `Alleen ${team}`}
+        </button>
+      </div>
+      <MatchTable
+        visibleMatches={filteredMatches}
+        team={team}
+        onView={(match) => {
+          setSelectedMatch(match)
+          setPage('wedstrijd-detail')
+        }}
+        onEdit={(match) => {
+          setEditingMatch(match)
+          setShowMatchForm(true)
+        }}
+        onDelete={deleteMatch}
+      />
+    </section>
+  )
+
+  const renderSettings = () => (
+    <section
+      className="page-content settings-list"
+      aria-labelledby="page-heading"
+    >
+      <label className="setting-row">
+        <span>
+          <strong>Favoriet team</strong>
+          <small>Gebruik dit team in je dashboard.</small>
+        </span>
+        <select value={team} onChange={(event) => setTeam(event.target.value)}>
+          {teams.map((teamName) => (
+            <option key={teamName}>{teamName}</option>
+          ))}
+        </select>
+      </label>
+      <label className="setting-row">
+        <span>
+          <strong>Wedstrijdmeldingen</strong>
+          <small>Ontvang een herinnering voor nieuwe uitslagen.</small>
+        </span>
+        <input
+          type="checkbox"
+          checked={notifications}
+          onChange={(event) => setNotifications(event.target.checked)}
+        />
+      </label>
+      <label className="setting-row">
+        <span>
+          <strong>Compacte weergave</strong>
+          <small>Toon meer informatie op kleinere schermen.</small>
+        </span>
+        <input
+          type="checkbox"
+          checked={compactView}
+          onChange={(event) => setCompactView(event.target.checked)}
+        />
+      </label>
+    </section>
+  )
+
+  const renderOverview = () => (
+    <section className="page-content" aria-labelledby="page-heading">
+      <section className="team-panel" aria-labelledby="team-heading">
+        <div>
+          <p className="section-kicker">Favoriet team</p>
+          <h2 id="team-heading">{team}</h2>
+        </div>
+        <div
+          className="team-picker"
+          role="group"
+          aria-label="Kies je favoriete team"
+        >
+          {teams.map((teamName) => (
+            <button
+              className={
+                teamName === team ? 'team-button is-selected' : 'team-button'
+              }
+              key={teamName}
+              type="button"
+              aria-pressed={teamName === team}
+              onClick={() => setTeam(teamName)}
+            >
+              {teamName}
+            </button>
+          ))}
+        </div>
+      </section>
+      <StatsGrid stats={stats} team={team} />
+      <div className="section-heading section-heading-with-control">
+        <div>
+          <p className="section-kicker">Resultaten</p>
+          <h2>Laatste wedstrijden</h2>
+        </div>
+        <button
+          className="filter-button"
+          type="button"
+          onClick={() => setPage('resultaten')}
+        >
+          Bekijk alles
+        </button>
+      </div>
+      <MatchTable
+        visibleMatches={teamMatches.slice(0, 2)}
+        team={team}
+        onView={(match) => {
+          setSelectedMatch(match)
+          setPage('wedstrijd-detail')
+        }}
+        onEdit={(match) => {
+          setEditingMatch(match)
+          setShowMatchForm(true)
+        }}
+        onDelete={deleteMatch}
+      />
+    </section>
+  )
+
+  let content = renderOverview()
+  if (page === 'spelers') content = renderPlayers()
+  if (page === 'resultaten' || page === 'wedstrijden') content = renderMatches()
+  if (page === 'instellingen') content = renderSettings()
+  if (page === 'wedstrijd-detail')
+    content = (
+      <MatchDetail
+        match={selectedMatch}
+        team={team}
+        onBack={() => setPage('wedstrijden')}
+      />
+    )
 
   return (
     <div className={compactView ? 'app-frame compact-view' : 'app-frame'}>
@@ -362,12 +373,37 @@ function App() {
             <p className="eyebrow">
               {page === 'overzicht' ? 'Eredivisie' : 'Voetbaltracker'}
             </p>
-            <h1 id="page-heading">{pageTitles[page][0]}</h1>
-            <p className="intro">{pageTitles[page][1]}</p>
+            <h1 id="page-heading">
+              {page === 'wedstrijd-detail'
+                ? 'Wedstrijd details'
+                : pageTitles[page][0]}
+            </h1>
+            <p className="intro">
+              {page === 'wedstrijd-detail'
+                ? 'Bekijk alle gebeurtenissen van deze wedstrijd.'
+                : pageTitles[page][1]}
+            </p>
           </header>
-          {renderPage()}
+          {content}
         </main>
       </div>
+      <PlayerModal
+        player={selectedPlayer}
+        onClose={() => setSelectedPlayer(null)}
+        closeButtonRef={closeButtonRef}
+      />
+      {showMatchForm && (
+        <div className="modal-backdrop">
+          <MatchForm
+            editingMatch={editingMatch}
+            onSubmit={saveMatch}
+            onCancel={() => {
+              setShowMatchForm(false)
+              setEditingMatch(null)
+            }}
+          />
+        </div>
+      )}
     </div>
   )
 }
