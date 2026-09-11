@@ -292,12 +292,8 @@ function App() {
       </div>
       <div className="section-heading section-heading-with-control">
         <div>
-          <p className="section-kicker">
-              Historie
-          </p>
-          <h2>
-            Wedstrijden en uitslagen
-          </h2>
+          <p className="section-kicker">Historie</p>
+          <h2>Wedstrijden en uitslagen</h2>
         </div>
         <button
           className="filter-button"
@@ -322,8 +318,18 @@ function App() {
         onDelete={deleteMatch}
       />
       <div className="stand-link-panel">
-        <div><p className="section-kicker">Ranglijst</p><h2>Stand bekijken</h2><p>Bekijk de punten, doelpunten en posities van elk team.</p></div>
-        <button className="primary-button" type="button" onClick={() => setPage('stand')}>Naar stand</button>
+        <div>
+          <p className="section-kicker">Ranglijst</p>
+          <h2>Stand bekijken</h2>
+          <p>Bekijk de punten, doelpunten en posities van elk team.</p>
+        </div>
+        <button
+          className="primary-button"
+          type="button"
+          onClick={() => setPage('stand')}
+        >
+          Naar stand
+        </button>
       </div>
     </section>
   )
@@ -431,7 +437,11 @@ function App() {
           <p className="section-kicker">Resultaten</p>
           <h2>Laatste wedstrijden</h2>
         </div>
-        <button className="filter-button" type="button" onClick={() => setPage('wedstrijden')}>
+        <button
+          className="filter-button"
+          type="button"
+          onClick={() => setPage('wedstrijden')}
+        >
           Bekijk alles
         </button>
       </div>
