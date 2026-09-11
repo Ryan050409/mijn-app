@@ -31,8 +31,13 @@ function App() {
   const stats = getStats(matches, team)
   const filteredMatches = matches.filter((match) => {
     const result = getResult(match, team)
-    const matchesSelectedTeam = !showTeamMatchesOnly || match.home === team || match.away === team
-    const matchesTeam = matchesSelectedTeam && (matchTeamFilter === 'Alle teams' || match.home === matchTeamFilter || match.away === matchTeamFilter)
+    const matchesSelectedTeam =
+      !showTeamMatchesOnly || match.home === team || match.away === team
+    const matchesTeam =
+      matchesSelectedTeam &&
+      (matchTeamFilter === 'Alle teams' ||
+        match.home === matchTeamFilter ||
+        match.away === matchTeamFilter)
     const matchesResult =
       matchResultFilter === 'Alle resultaten' || result === matchResultFilter
     const matchesDate =
