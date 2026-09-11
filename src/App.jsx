@@ -3,7 +3,7 @@ import './App.css'
 import {
   matches as initialMatches,
   players as initialPlayers,
-  teams,
+  teams as initialTeams,
 } from './data'
 import { getResult, getStats } from './stats'
 import StatsGrid from './StatsGrid'
@@ -14,10 +14,13 @@ import PlayerModal from './PlayerModal'
 import PlayerDetail from './PlayerDetail'
 import PlayerForm from './PlayerForm'
 import PlayerHighlights from './PlayerHighlights'
+import StandingsTable from './StandingsTable'
+import TeamForm from './TeamForm'
 
 function App() {
   const [team, setTeam] = useState('Ajax')
   const [matches, setMatches] = useState(initialMatches)
+  const [teams, setTeams] = useState(initialTeams)
   const [players, setPlayers] = useState(() =>
     initialPlayers.map((player, index) => ({ ...player, id: index + 1 })),
   )
@@ -38,6 +41,7 @@ function App() {
   const [editingPlayer, setEditingPlayer] = useState(null)
   const [showPlayerForm, setShowPlayerForm] = useState(false)
   const [playerSort, setPlayerSort] = useState('name')
+  const [showTeamForm, setShowTeamForm] = useState(false)
   const closeButtonRef = useRef(null)
   const teamMatches = matches.filter(
     ({ home, away }) => home === team || away === team,
@@ -81,18 +85,18 @@ function App() {
   const navigation = [
     ['overzicht', 'Overzicht', '⌂'],
     ['spelers', 'Spelers', '♙'],
-    ['resultaten', 'Resultaten', '◷'],
     ['wedstrijden', 'Wedstrijden', '▤'],
+    ['stand', 'Stand', '◷'],
     ['instellingen', 'Instellingen', '⚙'],
   ]
   const pageTitles = {
     overzicht: ['Jouw dashboard', `Alles over ${team} op één plek.`],
     spelers: ['Spelers', 'Bekijk de selectie en hun bijdrage dit seizoen.'],
-    resultaten: ['Resultaten', `De recente vorm van ${team}.`],
     wedstrijden: [
       'Wedstrijden',
-      'Alle gespeelde wedstrijden in één overzicht.',
+      'Uitslagen, filters en wedstrijdbeheer op één plek.',
     ],
+    stand: ['Stand', 'Bekijk de actuele ranglijst van alle teams.'],
     instellingen: ['Instellingen', 'Pas jouw voetbaltracker aan.'],
   }
   const toggleMatches = () => setShowTeamMatchesOnly((current) => !current)
@@ -128,6 +132,11 @@ function App() {
   const deletePlayer = (player) => {
     if (window.confirm(`Weet je zeker dat je ${player.name} wilt verwijderen?`))
       setPlayers((current) => current.filter((item) => item.id !== player.id))
+  }
+  const addTeam = (name) => {
+    if (!teams.some((item) => item.toLowerCase() === name.toLowerCase()))
+      setTeams((current) => [...current, name])
+    setShowTeamForm(false)
   }
 
   const renderPlayers = () => (
@@ -234,7 +243,7 @@ function App() {
 
   const renderMatches = () => (
     <section className="page-content" aria-labelledby="page-heading">
-      {page === 'resultaten' && <StatsGrid stats={stats} team={team} />}
+      <StatsGrid stats={stats} team={team} />
       <div className="match-toolbar">
         <button
           className="primary-button"
@@ -284,12 +293,10 @@ function App() {
       <div className="section-heading section-heading-with-control">
         <div>
           <p className="section-kicker">
-            {page === 'resultaten' ? 'Vorm' : 'Historie'}
+              Historie
           </p>
           <h2>
-            {page === 'resultaten'
-              ? `Resultaten van ${team}`
-              : 'Wedstrijdschema'}
+            Wedstrijden en uitslagen
           </h2>
         </div>
         <button
@@ -314,6 +321,20 @@ function App() {
         }}
         onDelete={deleteMatch}
       />
+      <div className="stand-link-panel">
+        <div><p className="section-kicker">Ranglijst</p><h2>Stand bekijken</h2><p>Bekijk de punten, doelpunten en posities van elk team.</p></div>
+        <button className="primary-button" type="button" onClick={() => setPage('stand')}>Naar stand</button>
+      </div>
+    </section>
+  )
+
+  const renderStandings = () => (
+    <section className="page-content" aria-labelledby="page-heading">
+      <div className="section-heading">
+        <p className="section-kicker">Competitie</p>
+        <h2>Actuele stand</h2>
+      </div>
+      <StandingsTable teams={teams} matches={matches} />
     </section>
   )
 
@@ -355,6 +376,25 @@ function App() {
           onChange={(event) => setCompactView(event.target.checked)}
         />
       </label>
+      <div className="settings-team-section">
+        <div>
+          <p className="section-kicker">Competitie</p>
+          <h2>Teams</h2>
+          <p>Voeg teams toe die je in wedstrijden en spelers kunt gebruiken.</p>
+        </div>
+        <button
+          className="primary-button"
+          type="button"
+          onClick={() => setShowTeamForm(true)}
+        >
+          + Team toevoegen
+        </button>
+      </div>
+      <ul className="team-list">
+        {teams.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
     </section>
   )
 
@@ -391,11 +431,7 @@ function App() {
           <p className="section-kicker">Resultaten</p>
           <h2>Laatste wedstrijden</h2>
         </div>
-        <button
-          className="filter-button"
-          type="button"
-          onClick={() => setPage('resultaten')}
-        >
+        <button className="filter-button" type="button" onClick={() => setPage('wedstrijden')}>
           Bekijk alles
         </button>
       </div>
@@ -417,7 +453,8 @@ function App() {
 
   let content = renderOverview()
   if (page === 'spelers') content = renderPlayers()
-  if (page === 'resultaten' || page === 'wedstrijden') content = renderMatches()
+  if (page === 'wedstrijden') content = renderMatches()
+  if (page === 'stand') content = renderStandings()
   if (page === 'instellingen') content = renderSettings()
   if (page === 'wedstrijd-detail')
     content = (
@@ -493,6 +530,7 @@ function App() {
         <div className="modal-backdrop">
           <MatchForm
             editingMatch={editingMatch}
+            teams={teams}
             onSubmit={saveMatch}
             onCancel={() => {
               setShowMatchForm(false)
@@ -505,11 +543,20 @@ function App() {
         <div className="modal-backdrop">
           <PlayerForm
             editingPlayer={editingPlayer}
+            teams={teams}
             onSubmit={savePlayer}
             onCancel={() => {
               setShowPlayerForm(false)
               setEditingPlayer(null)
             }}
+          />
+        </div>
+      )}
+      {showTeamForm && (
+        <div className="modal-backdrop">
+          <TeamForm
+            onSubmit={addTeam}
+            onCancel={() => setShowTeamForm(false)}
           />
         </div>
       )}

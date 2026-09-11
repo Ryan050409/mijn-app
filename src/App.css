@@ -1080,6 +1080,86 @@ input:focus-visible {
   padding-left: 1.25rem;
 }
 
+.standings-heading {
+  margin-top: 2.5rem;
+}
+
+.stand-link-panel {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1.25rem;
+  border-left: 0.35rem solid #087f5b;
+  background: #e9f7f1;
+}
+
+.stand-link-panel h2 {
+  font-size: 1.35rem;
+}
+
+.stand-link-panel p:last-child {
+  margin: 0.35rem 0 0;
+  color: #486581;
+}
+
+.standings-table th,
+.standings-table td {
+  padding: 0.75rem 0.85rem;
+  text-align: center;
+}
+
+.standings-table th:nth-child(2),
+.standings-table td:nth-child(2) {
+  text-align: left;
+}
+
+.standings-table th {
+  white-space: nowrap;
+}
+
+.standings-points {
+  color: #087f5b;
+  font-weight: 900;
+}
+
+.settings-team-section {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid #d9e2ec;
+}
+
+.settings-team-section h2 {
+  font-size: 1.35rem;
+}
+
+.settings-team-section p:last-child {
+  margin: 0.35rem 0 0;
+  color: #627d98;
+}
+
+.team-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0 1.5rem 1.25rem;
+  list-style: none;
+}
+
+.team-list li {
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  background: #e9f7f1;
+  color: #087f5b;
+  font-size: 0.875rem;
+  font-weight: 800;
+}
+
 @media (max-width: 600px) {
   .match-toolbar,
   .player-controls {
@@ -1099,6 +1179,38 @@ input:focus-visible {
 
   .match-actions {
     justify-content: flex-end;
+  }
+
+  .settings-team-section {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .stand-link-panel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .standings-table thead {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+
+  .standings-table tbody,
+  .standings-table tr,
+  .standings-table td,
+  .standings-table th {
+    display: table-cell;
+  }
+
+  .standings-table {
+    display: table;
+    min-width: 38rem;
   }
 }
 .player-controls {

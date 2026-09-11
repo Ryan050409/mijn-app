@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { teams } from './data'
 
-function MatchForm({ editingMatch, onSubmit, onCancel }) {
+function MatchForm({ editingMatch, onSubmit, onCancel, teams }) {
   const [form, setForm] = useState(
     () =>
       editingMatch || {

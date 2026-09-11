@@ -1,9 +1,7 @@
 import { useState } from 'react'
-import { teams } from './data'
-
 const emptyPlayer = {
   name: '',
-  team: teams[0],
+  team: '',
   position: 'Aanvaller',
   number: 1,
   goals: 0,
@@ -12,11 +10,11 @@ const emptyPlayer = {
   minutes: 0,
 }
 
-function PlayerForm({ editingPlayer, onSubmit, onCancel }) {
+function PlayerForm({ editingPlayer, onSubmit, onCancel, teams }) {
   const [form, setForm] = useState(() =>
     editingPlayer
       ? { ...editingPlayer, team: editingPlayer.team || teams[0] }
-      : emptyPlayer,
+      : { ...emptyPlayer, team: teams[0] },
   )
   const updateField = (field, value) =>
     setForm((current) => ({ ...current, [field]: value }))
