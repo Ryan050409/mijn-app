@@ -37,7 +37,9 @@ function PlayerModal({ player, onClose, closeButtonRef }) {
             {player.number}
           </div>
           <div>
-            <p className="section-kicker">{player.position}</p>
+            <p className="section-kicker">
+              {player.team || 'Ajax'} · {player.position}
+            </p>
             <h2 id="player-modal-title">{player.name}</h2>
           </div>
           <button

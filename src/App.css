@@ -595,6 +595,164 @@ input:focus-visible {
   }
 }
 
+.player-toolbar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.player-toolbar label {
+  display: grid;
+  gap: 0.35rem;
+  color: #486581;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.player-toolbar select {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid #bcccdc;
+  border-radius: 0.4rem;
+  background: #ffffff;
+  color: #243b53;
+  font: inherit;
+}
+
+.player-highlights {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.player-highlights article {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+  border: 1px solid #d9e2ec;
+  border-radius: 0.5rem;
+  background: #e9f7f1;
+}
+
+.player-highlights strong {
+  color: #102a43;
+  font-size: 1.15rem;
+}
+.player-highlights b {
+  color: #087f5b;
+}
+
+.player-card {
+  display: block;
+  padding: 0;
+}
+
+.player-card-main {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.player-card-main:focus-visible,
+.player-card-actions button:focus-visible,
+.player-toolbar select:focus-visible {
+  outline: 3px solid #f08c46;
+  outline-offset: 2px;
+}
+
+.player-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0 1.25rem 1rem;
+}
+
+.player-card-actions button {
+  min-height: 2.25rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #bcccdc;
+  border-radius: 0.35rem;
+  background: #ffffff;
+  color: #243b53;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.player-card-actions button:hover {
+  border-color: #087f5b;
+  color: #087f5b;
+}
+
+.player-detail-heading {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.player-detail-heading h2 {
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.player-charts {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.progress-card {
+  padding: 1rem;
+  border: 1px solid #d9e2ec;
+  border-radius: 0.5rem;
+  background: #ffffff;
+}
+
+.progress-card > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: #243b53;
+}
+.progress-track {
+  height: 0.75rem;
+  margin-top: 0.75rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e9ecef;
+}
+.progress-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #087f5b;
+}
+
+@media (max-width: 600px) {
+  .player-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .player-toolbar > * {
+    width: 100%;
+  }
+  .player-highlights {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 380px) {
   .stats-grid {
     grid-template-columns: 1fr;

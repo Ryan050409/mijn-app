@@ -1,16 +1,26 @@
 import { useRef, useState } from 'react'
 import './App.css'
-import { matches as initialMatches, players, teams } from './data'
+import {
+  matches as initialMatches,
+  players as initialPlayers,
+  teams,
+} from './data'
 import { getResult, getStats } from './stats'
 import StatsGrid from './StatsGrid'
 import MatchTable from './MatchTable'
 import MatchDetail from './MatchDetail'
 import MatchForm from './MatchForm'
 import PlayerModal from './PlayerModal'
+import PlayerDetail from './PlayerDetail'
+import PlayerForm from './PlayerForm'
+import PlayerHighlights from './PlayerHighlights'
 
 function App() {
   const [team, setTeam] = useState('Ajax')
   const [matches, setMatches] = useState(initialMatches)
+  const [players, setPlayers] = useState(() =>
+    initialPlayers.map((player, index) => ({ ...player, id: index + 1 })),
+  )
   const [page, setPage] = useState('overzicht')
   const [showTeamMatchesOnly, setShowTeamMatchesOnly] = useState(true)
   const [notifications, setNotifications] = useState(true)
@@ -24,6 +34,10 @@ function App() {
   const [matchTeamFilter, setMatchTeamFilter] = useState('Alle teams')
   const [matchResultFilter, setMatchResultFilter] = useState('Alle resultaten')
   const [matchDateFilter, setMatchDateFilter] = useState('')
+  const [selectedPlayerDetail, setSelectedPlayerDetail] = useState(null)
+  const [editingPlayer, setEditingPlayer] = useState(null)
+  const [showPlayerForm, setShowPlayerForm] = useState(false)
+  const [playerSort, setPlayerSort] = useState('name')
   const closeButtonRef = useRef(null)
   const teamMatches = matches.filter(
     ({ home, away }) => home === team || away === team,
@@ -45,15 +59,24 @@ function App() {
       match.date.toLowerCase().includes(matchDateFilter.toLowerCase())
     return matchesTeam && matchesResult && matchesDate
   })
-  const filteredPlayers = players.filter((player) => {
-    const matchesSearch = player.name
-      .toLowerCase()
-      .includes(playerSearch.toLowerCase())
-    return (
-      matchesSearch &&
-      (playerPosition === 'Alle' || player.position === playerPosition)
-    )
-  })
+  const filteredPlayers = players
+    .filter((player) => {
+      const matchesSearch = player.name
+        .toLowerCase()
+        .includes(playerSearch.toLowerCase())
+      return (
+        matchesSearch &&
+        (playerPosition === 'Alle' || player.position === playerPosition)
+      )
+    })
+    .sort((a, b) => {
+      if (playerSort === 'goalsPerMatch')
+        return (
+          (b.appearances ? b.goals / b.appearances : 0) -
+          (a.appearances ? a.goals / a.appearances : 0)
+        )
+      return (b[playerSort] || 0) - (a[playerSort] || 0)
+    })
 
   const navigation = [
     ['overzicht', 'Overzicht', '⌂'],
@@ -93,9 +116,48 @@ function App() {
       setMatches((current) => current.filter((item) => item.id !== match.id))
     }
   }
+  const savePlayer = (player) => {
+    if (player.id)
+      setPlayers((current) =>
+        current.map((item) => (item.id === player.id ? player : item)),
+      )
+    else setPlayers((current) => [...current, { ...player, id: Date.now() }])
+    setEditingPlayer(null)
+    setShowPlayerForm(false)
+  }
+  const deletePlayer = (player) => {
+    if (window.confirm(`Weet je zeker dat je ${player.name} wilt verwijderen?`))
+      setPlayers((current) => current.filter((item) => item.id !== player.id))
+  }
 
   const renderPlayers = () => (
     <section className="page-content" aria-labelledby="page-heading">
+      <PlayerHighlights players={players} />
+      <div className="player-toolbar">
+        <button
+          className="primary-button"
+          type="button"
+          onClick={() => {
+            setEditingPlayer(null)
+            setShowPlayerForm(true)
+          }}
+        >
+          + Speler toevoegen
+        </button>
+        <label>
+          Sorteer op
+          <select
+            value={playerSort}
+            onChange={(event) => setPlayerSort(event.target.value)}
+          >
+            <option value="name">Naam</option>
+            <option value="goals">Meeste goals</option>
+            <option value="assists">Meeste assists</option>
+            <option value="appearances">Meeste wedstrijden</option>
+            <option value="goalsPerMatch">Goals per wedstrijd</option>
+          </select>
+        </label>
+      </div>
       <div className="player-controls">
         <label>
           <span className="sr-only">Zoek een speler</span>
@@ -123,22 +185,45 @@ function App() {
       <div className="player-grid">
         {filteredPlayers.length ? (
           filteredPlayers.map((player) => (
-            <button
-              className="player-card"
-              key={player.name}
-              type="button"
-              aria-label={`Bekijk statistieken van ${player.name}`}
-              onClick={() => setSelectedPlayer(player)}
-            >
-              <div className="player-number">{player.number}</div>
-              <div>
-                <p className="section-kicker">{player.position}</p>
-                <h2>{player.name}</h2>
-                <p className="player-stat">
-                  {player.goals} doelpunten dit seizoen
-                </p>
+            <article className="player-card" key={player.name}>
+              <button
+                className="player-card-main"
+                type="button"
+                aria-label={`Bekijk statistieken van ${player.name}`}
+                onClick={() => setSelectedPlayerDetail(player)}
+              >
+                <div className="player-number">{player.number}</div>
+                <div>
+                  <p className="section-kicker">
+                    {player.team || 'Ajax'} · {player.position}
+                  </p>
+                  <h2>{player.name}</h2>
+                  <p className="player-stat">
+                    {player.goals} doelpunten dit seizoen
+                  </p>
+                </div>
+              </button>
+              <div className="player-card-actions">
+                <button
+                  type="button"
+                  onClick={() => setSelectedPlayerDetail(player)}
+                >
+                  Details
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingPlayer(player)
+                    setShowPlayerForm(true)
+                  }}
+                >
+                  Bewerken
+                </button>
+                <button type="button" onClick={() => deletePlayer(player)}>
+                  Verwijderen
+                </button>
               </div>
-            </button>
+            </article>
           ))
         ) : (
           <p>Geen spelers gevonden.</p>
@@ -342,6 +427,13 @@ function App() {
         onBack={() => setPage('wedstrijden')}
       />
     )
+  if (selectedPlayerDetail)
+    content = (
+      <PlayerDetail
+        player={selectedPlayerDetail}
+        onBack={() => setSelectedPlayerDetail(null)}
+      />
+    )
 
   return (
     <div className={compactView ? 'app-frame compact-view' : 'app-frame'}>
@@ -405,6 +497,18 @@ function App() {
             onCancel={() => {
               setShowMatchForm(false)
               setEditingMatch(null)
+            }}
+          />
+        </div>
+      )}
+      {showPlayerForm && (
+        <div className="modal-backdrop">
+          <PlayerForm
+            editingPlayer={editingPlayer}
+            onSubmit={savePlayer}
+            onCancel={() => {
+              setShowPlayerForm(false)
+              setEditingPlayer(null)
             }}
           />
         </div>

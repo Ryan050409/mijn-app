@@ -30,6 +30,7 @@ export const matches = [
 export const players = [
   {
     name: 'Brian Brobbey',
+    team: 'Ajax',
     position: 'Aanvaller',
     number: 9,
     goals: 18,
@@ -39,6 +40,7 @@ export const players = [
   },
   {
     name: 'Kenneth Taylor',
+    team: 'Ajax',
     position: 'Middenveld',
     number: 8,
     goals: 7,
@@ -48,6 +50,7 @@ export const players = [
   },
   {
     name: 'Jorrel Hato',
+    team: 'Ajax',
     position: 'Verdediger',
     number: 4,
     goals: 2,
@@ -57,6 +60,7 @@ export const players = [
   },
   {
     name: 'Remko Pasveer',
+    team: 'Ajax',
     position: 'Doelman',
     number: 1,
     goals: 0,
