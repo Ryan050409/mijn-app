@@ -1,8 +1,8 @@
-import { useState } from "react";
-import "./App.css";
+import { useState } from 'react'
+import './App.css'
 
 function App() {
-  const [team, setTeam] = useState("Ajax");
+  const [team, setTeam] = useState('Ajax')
 
   return (
     <div>
@@ -10,16 +10,10 @@ function App() {
 
       <h2>{team}</h2>
 
-      <button onClick={() => setTeam("PSV")}>
-        Kies PSV
-      </button>
+      <button onClick={() => setTeam('PSV')}>Kies PSV</button>
 
-      <button onClick={() => setTeam("Feyenoord")}>
-        Kies Feyenoord
-      </button>
-            <button onClick={() => setTeam("Ajax")}>
-        Kies Ajax
-      </button>
+      <button onClick={() => setTeam('Feyenoord')}>Kies Feyenoord</button>
+      <button onClick={() => setTeam('Ajax')}>Kies Ajax</button>
 
       <h2>Wedstrijden</h2>
 
@@ -27,7 +21,7 @@ function App() {
       <p>Ajax 2 - 2 Feyenoord</p>
       <p>Feyenoord 4 - 1 Psv</p>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
