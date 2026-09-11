@@ -26,6 +26,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+@media (max-width: 600px) {
+  :root {
+    font-size: 16px;
+  }
+}
+
 body {
   margin: 0;
   min-width: 320px;
