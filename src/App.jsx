@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import {
   matches as initialMatches,
@@ -32,6 +32,7 @@ function App() {
   const [notifications, setNotifications] = useState(true)
   const [compactView, setCompactView] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
+  const [globalSearch, setGlobalSearch] = useState('')
   const [favoritePlayer, setFavoritePlayer] = useState(
     initialPlayers[0]?.name || '',
   )
@@ -50,10 +51,16 @@ function App() {
   const [showPlayerForm, setShowPlayerForm] = useState(false)
   const [playerSort, setPlayerSort] = useState('name')
   const [showTeamForm, setShowTeamForm] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const closeButtonRef = useRef(null)
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setIsLoading(false))
+    return () => window.cancelAnimationFrame(frame)
+  }, [])
   const teamMatches = matches.filter(
     ({ home, away }) => home === team || away === team,
   )
+  const recentTeamMatches = teamMatches.slice(0, 5)
   const stats = getStats(matches, team)
   const filteredMatches = matches.filter((match) => {
     const result = getResult(match, team)
@@ -92,6 +99,31 @@ function App() {
     })
   const favoritePlayerData =
     players.find((player) => player.name === favoritePlayer) || players[0]
+  const normalizedGlobalSearch = globalSearch.trim().toLowerCase()
+  const globalSearchResults = normalizedGlobalSearch
+    ? [
+        ...teams
+          .filter((item) => item.toLowerCase().includes(normalizedGlobalSearch))
+          .slice(0, 5)
+          .map((item) => ({ type: 'team', label: item })),
+        ...players
+          .filter((item) => item.name.toLowerCase().includes(normalizedGlobalSearch))
+          .slice(0, 5)
+          .map((item) => ({ type: 'player', label: item.name, team: item.team })),
+        ...matches
+          .filter(
+            (item) =>
+              item.home.toLowerCase().includes(normalizedGlobalSearch) ||
+              item.away.toLowerCase().includes(normalizedGlobalSearch),
+          )
+          .slice(0, 5)
+          .map((item) => ({
+            type: 'match',
+            label: `${item.home} - ${item.away}`,
+            match: item,
+          })),
+      ].slice(0, 8)
+    : []
 
   const navigation = [
     ['overzicht', 'Overzicht', '⌂'],
@@ -104,10 +136,7 @@ function App() {
   const pageTitles = {
     overzicht: ['Jouw dashboard', `Alles over ${team} op één plek.`],
     spelers: ['Spelers', 'Bekijk de selectie en hun bijdrage dit seizoen.'],
-    teams: [
-      'Teams',
-      'Bekijk alle teams van de Eredivisie',
-    ],
+    teams: ['Teams', 'Bekijk alle teams van de Eredivisie'],
     wedstrijden: [
       'Wedstrijden',
       'Uitslagen, filters en wedstrijdbeheer op één plek.',
@@ -153,6 +182,18 @@ function App() {
     if (!teams.some((item) => item.toLowerCase() === name.toLowerCase()))
       setTeams((current) => [...current, name])
     setShowTeamForm(false)
+  }
+  const selectGlobalSearchResult = (result) => {
+    setGlobalSearch('')
+    if (result.type === 'team') {
+      setTeam(result.label)
+      setPage('teams')
+    } else if (result.type === 'player') {
+      setSelectedPlayerDetail(players.find((item) => item.name === result.label))
+    } else {
+      setSelectedMatch(result.match)
+      setPage('wedstrijd-detail')
+    }
   }
 
   const renderPlayers = () => (
@@ -308,7 +349,7 @@ function App() {
             </article>
           ))
         ) : (
-          <p>Geen spelers gevonden.</p>
+          <p className="empty-state">Geen spelers gevonden voor deze filters.</p>
         )}
       </div>
     </section>
@@ -545,18 +586,27 @@ function App() {
             <h2 id="form-heading">Laatste resultaten</h2>
           </div>
           <div className="form-strip" aria-label={`Vorm van ${team}`}>
-            {teamMatches.slice(0, 5).map((match) => {
+            {recentTeamMatches.map((match) => {
               const result = getResult(match, team)
               const shortResult =
                 result === 'Winst' ? 'W' : result === 'Gelijkspel' ? 'G' : 'V'
+              const points = result === 'Winst' ? 3 : result === 'Gelijkspel' ? 1 : 0
+              const opponent = match.home === team ? match.away : match.home
               return (
-                <span
-                  className={`form-pill form-${shortResult.toLowerCase()}`}
+                <div
+                  className={`form-chart-item form-${shortResult.toLowerCase()}`}
                   key={match.id}
                   title={`${match.home} ${match.homeScore} - ${match.awayScore} ${match.away}`}
                 >
-                  {shortResult}
-                </span>
+                  <div className="form-chart-bar-wrap">
+                    <span
+                      className="form-chart-bar"
+                      style={{ height: `${Math.max(16, points * 33.33)}%` }}
+                    />
+                  </div>
+                  <strong>{shortResult}</strong>
+                  <small>{opponent}</small>
+                </div>
               )
             })}
           </div>
@@ -649,6 +699,44 @@ function App() {
         >
           <span aria-hidden="true">⚽</span> Voetbaltracker
         </button>
+        <div className="global-search">
+          <label htmlFor="global-search-input" className="sr-only">
+            Zoek in teams, spelers en wedstrijden
+          </label>
+          <input
+            id="global-search-input"
+            type="search"
+            value={globalSearch}
+            placeholder="Zoek alles..."
+            onChange={(event) => setGlobalSearch(event.target.value)}
+          />
+          {globalSearch && (
+            <div className="global-search-results" role="listbox">
+              {globalSearchResults.length ? (
+                globalSearchResults.map((result) => (
+                  <button
+                    type="button"
+                    role="option"
+                    key={`${result.type}-${result.label}`}
+                    onClick={() => selectGlobalSearchResult(result)}
+                  >
+                    <span>
+                      {result.type === 'team'
+                        ? 'Team'
+                        : result.type === 'player'
+                          ? 'Speler'
+                          : 'Wedstrijd'}
+                    </span>
+                    <strong>{result.label}</strong>
+                    {result.team && <small>{result.team}</small>}
+                  </button>
+                ))
+              ) : (
+                <p className="global-search-empty">Geen resultaten gevonden.</p>
+              )}
+            </div>
+          )}
+        </div>
         <div className="topbar-actions">
           <span className="season-label">Eredivisie · 2024/25</span>
           <button
@@ -698,7 +786,13 @@ function App() {
                 : pageTitles[page][1]}
             </p>
           </header>
-          {content}
+          {isLoading ? (
+            <div className="loading-state" role="status" aria-live="polite">
+              Gegevens laden...
+            </div>
+          ) : (
+            content
+          )}
         </main>
       </div>
       <PlayerModal

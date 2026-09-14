@@ -57,6 +57,67 @@
   gap: 0.75rem;
 }
 
+.global-search {
+  position: relative;
+  width: min(22rem, 35vw);
+}
+
+.global-search input {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid #bcccdc;
+  border-radius: 999px;
+  background: #f8fafc;
+  color: #243b53;
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.global-search-results {
+  position: absolute;
+  z-index: 8;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  left: 0;
+  overflow: hidden;
+  border: 1px solid #d9e2ec;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  box-shadow: 0 1rem 2rem rgba(16, 42, 67, 0.15);
+}
+
+.global-search-results button {
+  display: grid;
+  width: 100%;
+  gap: 0.15rem;
+  padding: 0.65rem 0.8rem;
+  border: 0;
+  border-bottom: 1px solid #edf2f7;
+  background: transparent;
+  color: #243b53;
+  cursor: pointer;
+  text-align: left;
+}
+
+.global-search-results button:hover,
+.global-search-results button:focus-visible {
+  background: #e9f7f1;
+}
+
+.global-search-results button span,
+.global-search-results button small {
+  color: #627d98;
+  font-size: 0.7rem;
+}
+
+.global-search-empty {
+  margin: 0;
+  padding: 0.85rem;
+  color: #627d98;
+  font-size: 0.85rem;
+}
+
 .theme-toggle {
   display: grid;
   width: 2.75rem;
@@ -250,6 +311,40 @@ h2 {
 .table-wrap:focus-visible {
   outline: 3px solid #f08c46;
   outline-offset: 3px;
+}
+
+.empty-table-state {
+  padding: 2rem 1rem;
+  color: #627d98;
+  text-align: center;
+}
+
+.loading-state {
+  display: grid;
+  min-height: 12rem;
+  place-items: center;
+  border: 1px solid #d9e2ec;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  color: #627d98;
+  font-weight: 800;
+}
+
+.loading-state::before {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-bottom: 0.5rem;
+  border: 3px solid #b7e4d2;
+  border-top-color: #087f5b;
+  border-radius: 50%;
+  content: '';
+  animation: loading-spin 700ms linear infinite;
+}
+
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 table {
@@ -528,6 +623,15 @@ input:focus-visible {
 
   .season-label {
     display: none;
+  }
+
+  .global-search {
+    width: min(12rem, 42vw);
+  }
+
+  .global-search input {
+    min-height: 2.5rem;
+    font-size: 0.78rem;
   }
 
   .app-layout {
@@ -1154,32 +1258,74 @@ input:focus-visible {
 
 .form-strip {
   display: flex;
+  align-items: end;
+  height: 9rem;
   gap: 0.55rem;
+  padding: 0.75rem 0.25rem 0;
+  border-bottom: 1px solid #d9e2ec;
 }
 
-.form-pill {
+.form-chart-item {
   display: grid;
-  width: 2.75rem;
-  height: 2.75rem;
-  place-items: center;
-  border-radius: 50%;
+  min-width: 2.9rem;
+  flex: 1;
+  gap: 0.25rem;
+  justify-items: center;
+  color: #243b53;
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+.form-chart-bar-wrap {
+  display: flex;
+  width: 100%;
+  height: 5.25rem;
+  align-items: end;
+  justify-content: center;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.form-chart-bar {
+  display: block;
+  width: min(2.25rem, 70%);
+  min-height: 0.85rem;
+  border-radius: 0.3rem 0.3rem 0 0;
+  background: #087f5b;
+  transition: height 220ms ease;
+}
+
+.form-chart-item strong {
   font-size: 0.9rem;
   font-weight: 900;
 }
 
+.form-chart-item small {
+  max-width: 5rem;
+  overflow: hidden;
+  color: #627d98;
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .form-w {
-  background: #d3f9d8;
   color: #1b6e2f;
 }
 
 .form-g {
-  background: #fff3bf;
   color: #8a6116;
 }
 
 .form-v {
-  background: #ffe3e3;
   color: #a61e4d;
+}
+
+.form-g .form-chart-bar {
+  background: #e0a927;
+}
+
+.form-v .form-chart-bar {
+  background: #d9485f;
 }
 
 .dashboard-note {
@@ -1376,7 +1522,8 @@ input:focus-visible {
 .player-controls input,
 .player-controls select,
 .form-grid input,
-.form-grid select {
+.form-grid select,
+.form-grid textarea {
   min-height: 2.5rem;
   padding: 0.5rem 0.7rem;
   border: 1px solid #bcccdc;
@@ -1384,6 +1531,11 @@ input:focus-visible {
   background: #ffffff;
   color: #243b53;
   font: inherit;
+}
+
+.form-grid textarea {
+  min-height: 5rem;
+  resize: vertical;
 }
 
 .primary-button,
@@ -1528,6 +1680,25 @@ input:focus-visible {
 
 .detail-panel ul {
   padding-left: 1.25rem;
+}
+
+.scorers-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.scorers-columns > div {
+  min-width: 0;
+}
+
+.scorers-columns strong {
+  color: #102a43;
+}
+
+.scorers-columns p {
+  color: #627d98;
+  font-size: 0.85rem;
 }
 
 .standings-heading {
@@ -1860,6 +2031,10 @@ input:focus-visible {
 
   .form-grid,
   .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .scorers-columns {
     grid-template-columns: 1fr;
   }
 
@@ -2480,6 +2655,45 @@ input:focus-visible {
   background: rgba(16, 24, 32, 0.92);
 }
 
+.dark-mode .global-search input {
+  border-color: #40576a;
+  background: #1d2d3a;
+  color: #eef4f8;
+}
+
+.dark-mode .global-search-results {
+  border-color: #304454;
+  background: #172532;
+}
+
+.dark-mode .global-search-results button {
+  border-color: #304454;
+  color: #eef4f8;
+}
+
+.dark-mode .global-search-results button:hover,
+.dark-mode .global-search-results button:focus-visible {
+  background: #123d35;
+}
+
+.dark-mode .global-search-results button span,
+.dark-mode .global-search-results button small,
+.dark-mode .global-search-empty,
+.dark-mode .empty-table-state,
+.dark-mode .loading-state,
+.dark-mode .scorers-columns p {
+  color: #8fa6ba;
+}
+
+.dark-mode .loading-state {
+  border-color: #304454;
+  background: #172532;
+}
+
+.dark-mode .scorers-columns strong {
+  color: #f1f5f9;
+}
+
 .dark-mode .theme-toggle {
   border-color: #40576a;
   background: #1d2d3a;
@@ -2584,6 +2798,19 @@ input:focus-visible {
   background: #1c3440;
 }
 
+.dark-mode .form-strip,
+.dark-mode .form-chart-bar-wrap {
+  border-color: #304454;
+}
+
+.dark-mode .form-chart-item {
+  color: #eef4f8;
+}
+
+.dark-mode .form-chart-item small {
+  color: #8fa6ba;
+}
+
 .dark-mode .stat-card-featured,
 .dark-mode .player-highlights article,
 .dark-mode .standings-summary > div:first-child {
@@ -2644,9 +2871,16 @@ input:focus-visible {
     padding: 1rem;
   }
 
-  .form-pill {
-    width: 2.6rem;
-    height: 2.6rem;
+  .form-strip {
+    height: 8.5rem;
+  }
+
+  .form-chart-bar-wrap {
+    height: 4.75rem;
+  }
+
+  .form-chart-item {
+    min-width: 2.5rem;
   }
 
   .upcoming-list li {

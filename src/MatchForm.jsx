@@ -3,13 +3,22 @@ import { useState } from 'react'
 function MatchForm({ editingMatch, onSubmit, onCancel, teams }) {
   const [form, setForm] = useState(
     () =>
-      editingMatch || {
-        home: teams[0],
-        away: teams[1],
-        date: '',
-        homeScore: 0,
-        awayScore: 0,
-      },
+      editingMatch
+        ? {
+            ...editingMatch,
+            goalScorers: {
+              home: editingMatch.goalScorers?.home?.join('\n') || '',
+              away: editingMatch.goalScorers?.away?.join('\n') || '',
+            },
+          }
+        : {
+            home: teams[0],
+            away: teams[1],
+            date: '',
+            homeScore: 0,
+            awayScore: 0,
+            goalScorers: { home: '', away: '' },
+          },
   )
 
   const updateField = (field, value) => {
@@ -23,6 +32,16 @@ function MatchForm({ editingMatch, onSubmit, onCancel, teams }) {
       ...form,
       homeScore: Number(form.homeScore),
       awayScore: Number(form.awayScore),
+      goalScorers: {
+        home: form.goalScorers.home
+          .split('\n')
+          .map((scorer) => scorer.trim())
+          .filter(Boolean),
+        away: form.goalScorers.away
+          .split('\n')
+          .map((scorer) => scorer.trim())
+          .filter(Boolean),
+      },
     })
   }
 
@@ -92,6 +111,34 @@ function MatchForm({ editingMatch, onSubmit, onCancel, teams }) {
             type="number"
             value={form.awayScore}
             onChange={(event) => updateField('awayScore', event.target.value)}
+          />
+        </label>
+        <label>
+          Doelpuntenmakers {form.home}
+          <textarea
+            rows="3"
+            value={form.goalScorers.home}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                goalScorers: { ...current.goalScorers, home: event.target.value },
+              }))
+            }
+            placeholder="Een speler per regel"
+          />
+        </label>
+        <label>
+          Doelpuntenmakers {form.away}
+          <textarea
+            rows="3"
+            value={form.goalScorers.away}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                goalScorers: { ...current.goalScorers, away: event.target.value },
+              }))
+            }
+            placeholder="Een speler per regel"
           />
         </label>
       </div>

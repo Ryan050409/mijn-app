@@ -4,6 +4,8 @@ import { getResult } from './stats'
 function MatchDetail({ match, team, onBack }) {
   if (!match) return null
   const result = getResult(match, team)
+  const homeScorers = match.goalScorers?.home || []
+  const awayScorers = match.goalScorers?.away || []
 
   return (
     <section
@@ -27,16 +29,32 @@ function MatchDetail({ match, team, onBack }) {
       <div className="detail-grid">
         <section className="detail-panel">
           <h3>Doelpuntenmakers</h3>
-          <ul>
-            <li>
-              {match.home} ·{' '}
-              {match.homeScore ? 'Brian Brobbey' : 'Geen doelpunten'}
-            </li>
-            <li>
-              {match.away} ·{' '}
-              {match.awayScore ? 'Luuk de Jong' : 'Geen doelpunten'}
-            </li>
-          </ul>
+          <div className="scorers-columns">
+            <div>
+              <strong>{match.home}</strong>
+              {homeScorers.length ? (
+                <ul>
+                  {homeScorers.map((scorer, index) => (
+                    <li key={`${scorer}-${index}`}>{scorer}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>Geen doelpuntenmakers ingevoerd.</p>
+              )}
+            </div>
+            <div>
+              <strong>{match.away}</strong>
+              {awayScorers.length ? (
+                <ul>
+                  {awayScorers.map((scorer, index) => (
+                    <li key={`${scorer}-${index}`}>{scorer}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>Geen doelpuntenmakers ingevoerd.</p>
+              )}
+            </div>
+          </div>
         </section>
         <section className="detail-panel">
           <h3>Assists</h3>

@@ -22,8 +22,9 @@ function MatchTable({ visibleMatches, team, onView, onEdit, onDelete }) {
           </tr>
         </thead>
         <tbody>
-          {visibleMatches.map((match) => (
-            <tr key={match.id}>
+          {visibleMatches.length ? (
+            visibleMatches.map((match) => (
+              <tr key={match.id}>
               <td className="date-cell" data-label="Datum">
                 {match.date}
               </td>
@@ -56,8 +57,15 @@ function MatchTable({ visibleMatches, team, onView, onEdit, onDelete }) {
                   Verwijderen
                 </button>
               </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td className="empty-table-state" colSpan="6">
+                Geen wedstrijden gevonden voor deze filters.
+              </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>
