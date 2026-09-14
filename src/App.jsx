@@ -19,7 +19,7 @@ import TeamForm from './TeamForm'
 import TeamPage from './TeamPage'
 
 function App() {
-  const [team, setTeam] = useState('Ajax')
+  const [team, setTeam] = useState('Feyenoord')
   const [matches, setMatches] = useState(initialMatches)
   const [teams, setTeams] = useState(initialTeams)
   const [players, setPlayers] = useState(() =>
@@ -29,9 +29,13 @@ function App() {
   const [showTeamMatchesOnly, setShowTeamMatchesOnly] = useState(true)
   const [notifications, setNotifications] = useState(true)
   const [compactView, setCompactView] = useState(false)
+  const [favoritePlayer, setFavoritePlayer] = useState(
+    initialPlayers[0]?.name || '',
+  )
   const [selectedPlayer, setSelectedPlayer] = useState(null)
   const [playerSearch, setPlayerSearch] = useState('')
   const [playerPosition, setPlayerPosition] = useState('Alle')
+  const [playerTeamFilter, setPlayerTeamFilter] = useState('Alle teams')
   const [selectedMatch, setSelectedMatch] = useState(null)
   const [editingMatch, setEditingMatch] = useState(null)
   const [showMatchForm, setShowMatchForm] = useState(false)
@@ -71,7 +75,8 @@ function App() {
         .includes(playerSearch.toLowerCase())
       return (
         matchesSearch &&
-        (playerPosition === 'Alle' || player.position === playerPosition)
+        (playerPosition === 'Alle' || player.position === playerPosition) &&
+        (playerTeamFilter === 'Alle teams' || player.team === playerTeamFilter)
       )
     })
     .sort((a, b) => {
@@ -82,6 +87,8 @@ function App() {
         )
       return (b[playerSort] || 0) - (a[playerSort] || 0)
     })
+  const favoritePlayerData =
+    players.find((player) => player.name === favoritePlayer) || players[0]
 
   const navigation = [
     ['overzicht', 'Overzicht', '⌂'],
@@ -147,18 +154,46 @@ function App() {
 
   const renderPlayers = () => (
     <section className="page-content" aria-labelledby="page-heading">
+      {favoritePlayerData && (
+        <section className="favorite-player-panel" aria-labelledby="favorite-player-heading">
+          <div>
+            <p className="section-kicker">Jouw keuze</p>
+            <h2 id="favorite-player-heading">Favoriete speler</h2>
+            <p>
+              {favoritePlayerData.name} · {favoritePlayerData.team}
+            </p>
+          </div>
+          <label>
+            Kies een speler
+            <select
+              value={favoritePlayerData.name}
+              onChange={(event) => setFavoritePlayer(event.target.value)}
+            >
+              {players.map((player) => (
+                <option key={player.name} value={player.name}>
+                  {player.name} · {player.team}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button
+            className="filter-button"
+            type="button"
+            onClick={() => setSelectedPlayerDetail(favoritePlayerData)}
+          >
+            Bekijk profiel
+          </button>
+        </section>
+      )}
       <PlayerHighlights players={players} />
+      <div className="player-section-heading">
+        <div>
+          <p className="section-kicker">Selectie</p>
+          <h2>Alle spelers</h2>
+        </div>
+        <span>{filteredPlayers.length} spelers</span>
+      </div>
       <div className="player-toolbar">
-        <button
-          className="primary-button"
-          type="button"
-          onClick={() => {
-            setEditingPlayer(null)
-            setShowPlayerForm(true)
-          }}
-        >
-          + Speler toevoegen
-        </button>
         <label>
           Sorteer op
           <select
@@ -172,6 +207,16 @@ function App() {
             <option value="goalsPerMatch">Goals per wedstrijd</option>
           </select>
         </label>
+        <button
+          className="primary-button"
+          type="button"
+          onClick={() => {
+            setEditingPlayer(null)
+            setShowPlayerForm(true)
+          }}
+        >
+          + Speler toevoegen
+        </button>
       </div>
       <div className="player-controls">
         <label>
@@ -196,6 +241,18 @@ function App() {
             <option>Doelman</option>
           </select>
         </label>
+        <label>
+          <span className="sr-only">Filter op team</span>
+          <select
+            value={playerTeamFilter}
+            onChange={(event) => setPlayerTeamFilter(event.target.value)}
+          >
+            <option>Alle teams</option>
+            {teams.map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </select>
+        </label>
       </div>
       <div className="player-grid">
         {filteredPlayers.length ? (
@@ -209,9 +266,13 @@ function App() {
               >
                 <div className="player-number">{player.number}</div>
                 <div>
-                  <p className="section-kicker">
-                    {player.team || 'Ajax'} · {player.position}
-                  </p>
+                  <div className="player-card-meta">
+                    <span className="player-team-label">
+                      <span aria-hidden="true">{(player.team || 'Ajax').slice(0, 1)}</span>
+                      {player.team || 'Ajax'}
+                    </span>
+                    <span>{player.position}</span>
+                  </div>
                   <h2>{player.name}</h2>
                   <p className="player-stat">
                     {player.goals} doelpunten dit seizoen

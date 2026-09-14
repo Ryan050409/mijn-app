@@ -1,18 +1,17 @@
 :root {
   --text: #486581;
   --text-h: #102a43;
-  --bg: #f8fafc;
+  --bg: #f4f7f6;
   --border: #d9e2ec;
   --code-bg: #f4f3ec;
   --accent: #087f5b;
   --accent-bg: rgba(8, 127, 91, 0.1);
   --accent-border: rgba(8, 127, 91, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --shadow: 0 1rem 2.5rem rgba(16, 42, 67, 0.08);
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sans: 'Trebuchet MS', 'Segoe UI', sans-serif;
+  --heading: 'Trebuchet MS', 'Segoe UI', sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
@@ -35,7 +34,7 @@
 body {
   margin: 0;
   min-width: 320px;
-  background: var(--bg);
+  background: linear-gradient(135deg, #f4f7f6 0%, #f8fafc 52%, #eef7f3 100%);
 }
 
 #root {
@@ -50,6 +49,17 @@ body {
 
 button {
   font: inherit;
+}
+
+button,
+select,
+input {
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
 }
 
 .sr-only {
