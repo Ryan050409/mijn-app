@@ -560,9 +560,7 @@ function App() {
               )
             })}
           </div>
-          <p className="dashboard-note">
-            Winst · gelijkspel · verlies
-          </p>
+          <p className="dashboard-note">Winst · gelijkspel · verlies</p>
         </section>
         <section className="dashboard-panel" aria-labelledby="upcoming-heading">
           <div className="section-heading">
@@ -658,7 +656,9 @@ function App() {
             type="button"
             aria-pressed={darkMode}
             aria-label={
-              darkMode ? 'Lichte weergave inschakelen' : 'Donkere weergave inschakelen'
+              darkMode
+                ? 'Lichte weergave inschakelen'
+                : 'Donkere weergave inschakelen'
             }
             title={darkMode ? 'Lichte weergave' : 'Donkere weergave'}
             onClick={() => setDarkMode((current) => !current)}

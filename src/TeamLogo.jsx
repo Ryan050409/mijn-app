@@ -41,8 +41,11 @@ const teamLogoPaths = {
 }
 
 function TeamLogo({ team, size = 'medium' }) {
-  const [primary, secondary, abbreviation] =
-    teamStyles[team] || ['#087f5b', '#ffffff', team.slice(0, 3).toUpperCase()]
+  const [primary, secondary, abbreviation] = teamStyles[team] || [
+    '#087f5b',
+    '#ffffff',
+    team.slice(0, 3).toUpperCase(),
+  ]
 
   return (
     <span
