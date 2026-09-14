@@ -898,6 +898,170 @@ input:focus-visible {
   }
 }
 
+.standings-page-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.standings-season {
+  color: #627d98;
+  font-size: 0.8rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.standings-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) repeat(2, minmax(6rem, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.standings-summary > div {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid #d9e2ec;
+  border-radius: 0.5rem;
+  background: #ffffff;
+}
+
+.standings-summary > div:first-child {
+  border-color: #b7e4d2;
+  background: #e9f7f1;
+}
+
+.standings-summary strong {
+  overflow-wrap: anywhere;
+  color: #102a43;
+  font-size: 1.2rem;
+}
+
+.standings-scroll-hint {
+  margin: 0 0 0.65rem;
+  color: #627d98;
+  font-size: 0.8rem;
+}
+
+.standings-wrap {
+  scrollbar-color: #9acfb9 #f0f4f8;
+}
+
+.standings-table .is-selected-team td,
+.standings-table .is-selected-team th {
+  background: #f0fbf6;
+  font-weight: 800;
+}
+
+.standings-table .is-selected-team th:nth-child(2) {
+  color: #087f5b;
+}
+
+.standings-team-label {
+  display: block;
+  margin-top: 0.15rem;
+  color: #087f5b;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+@media (max-width: 600px) {
+  .standings-page-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .standings-summary {
+    grid-template-columns: 1.2fr 1fr;
+  }
+
+  .standings-summary > div:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .standings-wrap {
+    overflow-x: hidden;
+  }
+
+  .standings-table {
+    display: block;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .standings-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .standings-table tbody,
+  .standings-table tr,
+  .standings-table td,
+  .standings-table th {
+    display: block;
+  }
+
+  .standings-table tr {
+    padding: 0.8rem;
+  }
+
+  .standings-table tbody tr + tr {
+    border-top: 1px solid #d9e2ec;
+  }
+
+  .standings-table th,
+  .standings-table td {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.42rem 0;
+    text-align: right;
+    white-space: normal;
+  }
+
+  .standings-table th::before,
+  .standings-table td::before {
+    display: block;
+    flex: 0 0 auto;
+    color: #627d98;
+    content: attr(data-label);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .standings-table th[scope='row'] {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .standings-table th[scope='row'] > span,
+  .standings-table th[scope='row'] > small {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .standings-table .is-selected-team th,
+  .standings-table .is-selected-team td {
+    background: transparent;
+  }
+}
+
 .compact-view .stat-card {
   min-height: 6.5rem;
   padding: 0.75rem;
@@ -1731,6 +1895,319 @@ input:focus-visible {
   min-width: 180px;
 }
 
+/* Keep every mobile workflow inside the viewport and easy to tap. */
+@media (max-width: 600px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .topbar {
+    min-height: 3.75rem;
+    padding: 0 0.75rem;
+  }
+
+  .brand {
+    min-height: 2.75rem;
+    max-width: 70%;
+    overflow: hidden;
+    font-size: 1rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .app-shell {
+    width: calc(100% - 1.25rem);
+    padding: 1.25rem 0 5rem;
+  }
+
+  .app-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .app-header h1 {
+    font-size: clamp(1.9rem, 9vw, 2.5rem);
+    overflow-wrap: anywhere;
+  }
+
+  .intro {
+    max-width: none;
+    font-size: 1rem;
+  }
+
+  .side-nav {
+    min-height: 3.75rem;
+    padding: 0.35rem max(0.25rem, env(safe-area-inset-left))
+      max(0.35rem, env(safe-area-inset-bottom));
+  }
+
+  .nav-button {
+    min-height: 3rem;
+    padding: 0.35rem 0.15rem;
+  }
+
+  .nav-button span {
+    line-height: 1;
+  }
+
+  .team-panel {
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+    padding: 1rem;
+  }
+
+  .team-picker {
+    display: flex;
+    flex-wrap: nowrap;
+    margin: 0 -0.25rem;
+    overflow-x: auto;
+    padding: 0.25rem;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+  }
+
+  .team-button {
+    min-width: 8.5rem;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    min-width: 0;
+    min-height: 6.75rem;
+    padding: 0.85rem;
+  }
+
+  .stat-card strong {
+    font-size: 1.45rem;
+  }
+
+  .stat-note {
+    overflow-wrap: anywhere;
+  }
+
+  .favorite-player-panel {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    gap: 0.9rem;
+    padding: 1rem;
+  }
+
+  .favorite-player-panel select,
+  .favorite-player-panel .filter-button {
+    width: 100%;
+    max-width: none;
+  }
+
+  .player-section-heading {
+    align-items: flex-start;
+    margin-top: 1.5rem;
+  }
+
+  .player-section-heading h2 {
+    font-size: 1.35rem;
+  }
+
+  .player-toolbar,
+  .match-toolbar,
+  .player-controls {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin-bottom: 1rem;
+  }
+
+  .player-toolbar > *,
+  .match-toolbar > *,
+  .player-controls > *,
+  .player-toolbar label,
+  .match-toolbar label,
+  .player-controls label {
+    width: 100%;
+  }
+
+  .player-toolbar select,
+  .match-toolbar input,
+  .match-toolbar select,
+  .player-controls input,
+  .player-controls select,
+  .form-grid input,
+  .form-grid select {
+    width: 100%;
+    min-height: 2.75rem;
+  }
+
+  .primary-button,
+  .filter-button,
+  .back-button {
+    min-height: 2.75rem;
+  }
+
+  .player-card-main {
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .player-card-main > div:last-child {
+    min-width: 0;
+  }
+
+  .player-card-main h2 {
+    overflow-wrap: anywhere;
+  }
+
+  .player-card-actions {
+    gap: 0.5rem;
+    padding: 0.7rem 1rem 1rem;
+  }
+
+  .player-card-actions button {
+    min-height: 2.75rem;
+    flex: 1 1 7rem;
+  }
+
+  .table-wrap {
+    max-width: 100%;
+    border-radius: 0.4rem;
+  }
+
+  .match-actions {
+    justify-content: stretch;
+  }
+
+  .match-actions button {
+    min-height: 2.5rem;
+    flex: 1 1 6rem;
+  }
+
+  .settings-list {
+    overflow: visible;
+  }
+
+  .setting-row {
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .setting-row > span {
+    min-width: 0;
+  }
+
+  .setting-row select {
+    min-width: 0;
+    max-width: 45%;
+  }
+
+  .team-directory {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.6rem;
+    margin: 0 -0.25rem 1.25rem;
+    overflow-x: auto;
+    padding: 0.25rem;
+    scroll-snap-type: x proximity;
+  }
+
+  .team-directory-card {
+    min-width: 9.5rem;
+    flex: 0 0 9.5rem;
+    scroll-snap-align: start;
+  }
+
+  .team-page-columns,
+  .detail-grid,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .team-page-panel,
+  .detail-panel {
+    padding: 1rem;
+  }
+
+  .team-player-list li,
+  .team-match-list li {
+    align-items: flex-start;
+  }
+
+  .modal-backdrop {
+    align-items: start;
+    overflow-y: auto;
+    padding: max(0.75rem, env(safe-area-inset-top))
+      0.75rem max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .player-modal,
+  .match-form {
+    width: 100%;
+    max-height: calc(100svh - 1.5rem);
+    padding: 1rem;
+  }
+
+  .modal-header,
+  .form-heading {
+    align-items: flex-start;
+  }
+
+  .modal-header h2,
+  .form-heading h2 {
+    font-size: 1.35rem;
+  }
+
+  .form-actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .form-actions > button {
+    width: 100%;
+    min-height: 2.75rem;
+  }
+
+  .detail-scoreboard {
+    padding: 1rem;
+  }
+
+  .detail-scoreboard h2 {
+    gap: 0.5rem;
+    font-size: 1.4rem;
+  }
+
+  .stand-link-panel,
+  .settings-team-section {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .standings-table {
+    min-width: 38rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-button {
+    font-size: 0.62rem;
+  }
+
+  .player-number {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.15rem;
+  }
+}
+
 @media (max-width: 600px) {
   .favorite-player-panel {
     grid-template-columns: 1fr;
@@ -1754,5 +2231,82 @@ input:focus-visible {
 
   .player-section-heading h2 {
     font-size: 1.35rem;
+  }
+}
+
+/* Keep team rows and their statistics side by side on narrow screens. */
+@media (max-width: 600px) {
+  .standings-wrap {
+    overflow-x: auto;
+  }
+
+  .standings-table {
+    display: table;
+    min-width: 0;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .standings-table thead {
+    display: table-header-group;
+  }
+
+  .standings-table tbody {
+    display: table-row-group;
+  }
+
+  .standings-table tr {
+    display: table-row;
+    padding: 0;
+  }
+
+  .standings-table th,
+  .standings-table td {
+    display: table-cell;
+    overflow-wrap: anywhere;
+    padding: 0.65rem 0.2rem;
+    text-align: center;
+    vertical-align: middle;
+    white-space: normal;
+  }
+
+  .standings-table th {
+    font-size: 0.62rem;
+    letter-spacing: 0.03em;
+  }
+
+  .standings-table td {
+    font-size: 0.78rem;
+  }
+
+  .standings-table th:nth-child(1),
+  .standings-table td:nth-child(1) {
+    width: 7%;
+  }
+
+  .standings-table th:nth-child(2),
+  .standings-table td:nth-child(2) {
+    width: 29%;
+    text-align: left;
+  }
+
+  .standings-table th:nth-child(n + 3),
+  .standings-table td:nth-child(n + 3) {
+    width: 9.14%;
+  }
+
+  .standings-table th::before,
+  .standings-table td::before {
+    display: none;
+  }
+
+  .standings-table th[scope='row'] > span,
+  .standings-table th[scope='row'] > small {
+    display: block;
+  }
+
+  .standings-table .standings-team-label {
+    margin-top: 0.1rem;
+    font-size: 0.58rem;
   }
 }

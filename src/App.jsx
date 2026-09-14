@@ -155,7 +155,10 @@ function App() {
   const renderPlayers = () => (
     <section className="page-content" aria-labelledby="page-heading">
       {favoritePlayerData && (
-        <section className="favorite-player-panel" aria-labelledby="favorite-player-heading">
+        <section
+          className="favorite-player-panel"
+          aria-labelledby="favorite-player-heading"
+        >
           <div>
             <p className="section-kicker">Jouw keuze</p>
             <h2 id="favorite-player-heading">Favoriete speler</h2>
@@ -268,7 +271,9 @@ function App() {
                 <div>
                   <div className="player-card-meta">
                     <span className="player-team-label">
-                      <span aria-hidden="true">{(player.team || 'Ajax').slice(0, 1)}</span>
+                      <span aria-hidden="true">
+                        {(player.team || 'Ajax').slice(0, 1)}
+                      </span>
                       {player.team || 'Ajax'}
                     </span>
                     <span>{player.position}</span>
@@ -413,11 +418,31 @@ function App() {
 
   const renderStandings = () => (
     <section className="page-content" aria-labelledby="page-heading">
-      <div className="section-heading">
-        <p className="section-kicker">Competitie</p>
-        <h2>Actuele stand</h2>
+      <div className="section-heading standings-page-heading">
+        <div>
+          <p className="section-kicker">Competitie</p>
+          <h2>Actuele stand</h2>
+        </div>
+        <span className="standings-season">Eredivisie · 2024/25</span>
       </div>
-      <StandingsTable teams={teams} matches={matches} />
+      <div className="standings-summary" aria-label={`Samenvatting van ${team}`}>
+        <div>
+          <span className="stat-label">Jouw team</span>
+          <strong>{team}</strong>
+        </div>
+        <div>
+          <span className="stat-label">Punten</span>
+          <strong>{stats.points}</strong>
+        </div>
+        <div>
+          <span className="stat-label">Wedstrijden</span>
+          <strong>{stats.played}</strong>
+        </div>
+      </div>
+      <p className="standings-scroll-hint">
+        Op een klein scherm kun je de tabel horizontaal verschuiven.
+      </p>
+      <StandingsTable teams={teams} matches={matches} selectedTeam={team} />
     </section>
   )
 

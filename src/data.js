@@ -40,7 +40,12 @@ export const matches = [
 
 const playerNames = [
   ['Brian Brobbey', 'Kenneth Taylor', 'Jorrel Hato', 'Remko Pasveer'],
-  ['Mexx Meerdink', 'Jordy Clasie', 'David Møller Wolfe', 'Rome-Jayden Owusu-Oduro'],
+  [
+    'Mexx Meerdink',
+    'Jordy Clasie',
+    'David Møller Wolfe',
+    'Rome-Jayden Owusu-Oduro',
+  ],
   ['Kornelius Hansen', 'Thom Haye', 'Ruben Kluivert', 'Nordin Bakker'],
   ['Ayase Ueda', 'Antoni Milambo', 'Gernot Trauner', 'Justin Bijlow'],
   ['Romano Postema', 'Luciano Valente', 'Thijmen Blokzijl', 'Etienne Vaessen'],
@@ -67,8 +72,22 @@ export const players = teams.flatMap((team, teamIndex) =>
     team,
     position: positions[playerIndex],
     number: [9, 8, 4, 1][playerIndex],
-    goals: playerIndex === 0 ? 8 + (teamIndex % 8) : playerIndex === 1 ? 3 + (teamIndex % 5) : playerIndex === 2 ? teamIndex % 3 : 0,
-    assists: playerIndex === 0 ? 3 + (teamIndex % 4) : playerIndex === 1 ? 5 + (teamIndex % 5) : playerIndex === 2 ? 1 + (teamIndex % 3) : 0,
+    goals:
+      playerIndex === 0
+        ? 8 + (teamIndex % 8)
+        : playerIndex === 1
+          ? 3 + (teamIndex % 5)
+          : playerIndex === 2
+            ? teamIndex % 3
+            : 0,
+    assists:
+      playerIndex === 0
+        ? 3 + (teamIndex % 4)
+        : playerIndex === 1
+          ? 5 + (teamIndex % 5)
+          : playerIndex === 2
+            ? 1 + (teamIndex % 3)
+            : 0,
     appearances: 20 + ((teamIndex + playerIndex * 3) % 12),
     minutes: 1500 + ((teamIndex * 97 + playerIndex * 260) % 1100),
   })),

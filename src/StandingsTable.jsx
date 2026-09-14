@@ -1,4 +1,4 @@
-function StandingsTable({ teams, matches }) {
+function StandingsTable({ teams, matches, selectedTeam }) {
   const standings = teams
     .map((team) => {
       const summary = matches.reduce(
@@ -47,6 +47,7 @@ function StandingsTable({ teams, matches }) {
       className="table-wrap standings-wrap"
       role="region"
       aria-label="Stand van de teams"
+      tabIndex="0"
     >
       <table className="standings-table">
         <caption className="sr-only">Stand van alle teams</caption>
@@ -65,10 +66,17 @@ function StandingsTable({ teams, matches }) {
         </thead>
         <tbody>
           {standings.map((item, index) => (
-            <tr key={item.team}>
+            <tr
+              className={item.team === selectedTeam ? 'is-selected-team' : ''}
+              key={item.team}
+              aria-current={item.team === selectedTeam ? 'true' : undefined}
+            >
               <td data-label="#">{index + 1}</td>
               <th scope="row" data-label="Team">
-                {item.team}
+                <span>{item.team}</span>
+                {item.team === selectedTeam && (
+                  <small className="standings-team-label">Jouw team</small>
+                )}
               </th>
               <td data-label="GS">{item.played}</td>
               <td data-label="W">{item.wins}</td>
