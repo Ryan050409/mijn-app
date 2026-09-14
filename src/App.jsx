@@ -107,9 +107,15 @@ function App() {
           .slice(0, 5)
           .map((item) => ({ type: 'team', label: item })),
         ...players
-          .filter((item) => item.name.toLowerCase().includes(normalizedGlobalSearch))
+          .filter((item) =>
+            item.name.toLowerCase().includes(normalizedGlobalSearch),
+          )
           .slice(0, 5)
-          .map((item) => ({ type: 'player', label: item.name, team: item.team })),
+          .map((item) => ({
+            type: 'player',
+            label: item.name,
+            team: item.team,
+          })),
         ...matches
           .filter(
             (item) =>
@@ -189,7 +195,9 @@ function App() {
       setTeam(result.label)
       setPage('teams')
     } else if (result.type === 'player') {
-      setSelectedPlayerDetail(players.find((item) => item.name === result.label))
+      setSelectedPlayerDetail(
+        players.find((item) => item.name === result.label),
+      )
     } else {
       setSelectedMatch(result.match)
       setPage('wedstrijd-detail')
@@ -349,7 +357,9 @@ function App() {
             </article>
           ))
         ) : (
-          <p className="empty-state">Geen spelers gevonden voor deze filters.</p>
+          <p className="empty-state">
+            Geen spelers gevonden voor deze filters.
+          </p>
         )}
       </div>
     </section>
@@ -590,7 +600,8 @@ function App() {
               const result = getResult(match, team)
               const shortResult =
                 result === 'Winst' ? 'W' : result === 'Gelijkspel' ? 'G' : 'V'
-              const points = result === 'Winst' ? 3 : result === 'Gelijkspel' ? 1 : 0
+              const points =
+                result === 'Winst' ? 3 : result === 'Gelijkspel' ? 1 : 0
               const opponent = match.home === team ? match.away : match.home
               return (
                 <div

@@ -1,24 +1,23 @@
 import { useState } from 'react'
 
 function MatchForm({ editingMatch, onSubmit, onCancel, teams }) {
-  const [form, setForm] = useState(
-    () =>
-      editingMatch
-        ? {
-            ...editingMatch,
-            goalScorers: {
-              home: editingMatch.goalScorers?.home?.join('\n') || '',
-              away: editingMatch.goalScorers?.away?.join('\n') || '',
-            },
-          }
-        : {
-            home: teams[0],
-            away: teams[1],
-            date: '',
-            homeScore: 0,
-            awayScore: 0,
-            goalScorers: { home: '', away: '' },
+  const [form, setForm] = useState(() =>
+    editingMatch
+      ? {
+          ...editingMatch,
+          goalScorers: {
+            home: editingMatch.goalScorers?.home?.join('\n') || '',
+            away: editingMatch.goalScorers?.away?.join('\n') || '',
           },
+        }
+      : {
+          home: teams[0],
+          away: teams[1],
+          date: '',
+          homeScore: 0,
+          awayScore: 0,
+          goalScorers: { home: '', away: '' },
+        },
   )
 
   const updateField = (field, value) => {
@@ -121,7 +120,10 @@ function MatchForm({ editingMatch, onSubmit, onCancel, teams }) {
             onChange={(event) =>
               setForm((current) => ({
                 ...current,
-                goalScorers: { ...current.goalScorers, home: event.target.value },
+                goalScorers: {
+                  ...current.goalScorers,
+                  home: event.target.value,
+                },
               }))
             }
             placeholder="Een speler per regel"
@@ -135,7 +137,10 @@ function MatchForm({ editingMatch, onSubmit, onCancel, teams }) {
             onChange={(event) =>
               setForm((current) => ({
                 ...current,
-                goalScorers: { ...current.goalScorers, away: event.target.value },
+                goalScorers: {
+                  ...current.goalScorers,
+                  away: event.target.value,
+                },
               }))
             }
             placeholder="Een speler per regel"
