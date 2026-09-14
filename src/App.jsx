@@ -106,7 +106,7 @@ function App() {
     spelers: ['Spelers', 'Bekijk de selectie en hun bijdrage dit seizoen.'],
     teams: [
       'Teams',
-      'Bekijk Ajax, PSV, Feyenoord en andere teams afzonderlijk.',
+      'Bekijk alle teams van de Eredivisie',
     ],
     wedstrijden: [
       'Wedstrijden',
