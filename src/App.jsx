@@ -4,6 +4,7 @@ import {
   matches as initialMatches,
   players as initialPlayers,
   teams as initialTeams,
+  upcomingMatches,
 } from './data'
 import { getResult, getStats } from './stats'
 import StatsGrid from './StatsGrid'
@@ -17,6 +18,7 @@ import PlayerHighlights from './PlayerHighlights'
 import StandingsTable from './StandingsTable'
 import TeamForm from './TeamForm'
 import TeamPage from './TeamPage'
+import TeamLogo from './TeamLogo'
 
 function App() {
   const [team, setTeam] = useState('Feyenoord')
@@ -29,6 +31,7 @@ function App() {
   const [showTeamMatchesOnly, setShowTeamMatchesOnly] = useState(true)
   const [notifications, setNotifications] = useState(true)
   const [compactView, setCompactView] = useState(false)
+  const [darkMode, setDarkMode] = useState(false)
   const [favoritePlayer, setFavoritePlayer] = useState(
     initialPlayers[0]?.name || '',
   )
@@ -271,9 +274,7 @@ function App() {
                 <div>
                   <div className="player-card-meta">
                     <span className="player-team-label">
-                      <span aria-hidden="true">
-                        {(player.team || 'Ajax').slice(0, 1)}
-                      </span>
+                      <TeamLogo team={player.team || 'Ajax'} size="tiny" />
                       {player.team || 'Ajax'}
                     </span>
                     <span>{player.position}</span>
@@ -425,7 +426,10 @@ function App() {
         </div>
         <span className="standings-season">Eredivisie · 2024/25</span>
       </div>
-      <div className="standings-summary" aria-label={`Samenvatting van ${team}`}>
+      <div
+        className="standings-summary"
+        aria-label={`Samenvatting van ${team}`}
+      >
         <div>
           <span className="stat-label">Jouw team</span>
           <strong>{team}</strong>
@@ -534,6 +538,53 @@ function App() {
         </div>
       </section>
       <StatsGrid stats={stats} team={team} />
+      <div className="dashboard-insights">
+        <section className="dashboard-panel" aria-labelledby="form-heading">
+          <div className="section-heading">
+            <p className="section-kicker">Teamvorm</p>
+            <h2 id="form-heading">Laatste resultaten</h2>
+          </div>
+          <div className="form-strip" aria-label={`Vorm van ${team}`}>
+            {teamMatches.slice(0, 5).map((match) => {
+              const result = getResult(match, team)
+              const shortResult =
+                result === 'Winst' ? 'W' : result === 'Gelijkspel' ? 'G' : 'V'
+              return (
+                <span
+                  className={`form-pill form-${shortResult.toLowerCase()}`}
+                  key={match.id}
+                  title={`${match.home} ${match.homeScore} - ${match.awayScore} ${match.away}`}
+                >
+                  {shortResult}
+                </span>
+              )
+            })}
+          </div>
+          <p className="dashboard-note">
+            Winst · gelijkspel · verlies
+          </p>
+        </section>
+        <section className="dashboard-panel" aria-labelledby="upcoming-heading">
+          <div className="section-heading">
+            <p className="section-kicker">Programma</p>
+            <h2 id="upcoming-heading">Komende wedstrijden</h2>
+          </div>
+          <ul className="upcoming-list">
+            {upcomingMatches
+              .filter(({ home, away }) => home === team || away === team)
+              .slice(0, 3)
+              .map((match) => (
+                <li key={match.id}>
+                  <span>{match.date}</span>
+                  <strong>
+                    {match.home} <b>vs</b> {match.away}
+                  </strong>
+                  <small>{match.venue}</small>
+                </li>
+              ))}
+          </ul>
+        </section>
+      </div>
       <div className="section-heading section-heading-with-control">
         <div>
           <p className="section-kicker">Resultaten</p>
@@ -586,7 +637,9 @@ function App() {
     )
 
   return (
-    <div className={compactView ? 'app-frame compact-view' : 'app-frame'}>
+    <div
+      className={`${compactView ? 'compact-view ' : ''}${darkMode ? 'dark-mode ' : ''}app-frame`}
+    >
       <a className="skip-link" href="#main-content">
         Ga naar inhoud
       </a>
@@ -598,7 +651,21 @@ function App() {
         >
           <span aria-hidden="true">⚽</span> Voetbaltracker
         </button>
-        <span className="season-label">Eredivisie · 2024/25</span>
+        <div className="topbar-actions">
+          <span className="season-label">Eredivisie · 2024/25</span>
+          <button
+            className="theme-toggle"
+            type="button"
+            aria-pressed={darkMode}
+            aria-label={
+              darkMode ? 'Lichte weergave inschakelen' : 'Donkere weergave inschakelen'
+            }
+            title={darkMode ? 'Lichte weergave' : 'Donkere weergave'}
+            onClick={() => setDarkMode((current) => !current)}
+          >
+            <span aria-hidden="true">{darkMode ? '☀' : '☾'}</span>
+          </button>
+        </div>
       </header>
       <div className="app-layout">
         <nav className="side-nav" aria-label="Hoofdnavigatie">

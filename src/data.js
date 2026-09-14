@@ -38,6 +38,14 @@ export const matches = [
   })),
 ]
 
+export const upcomingMatches = teams.map((home, index) => ({
+  id: `upcoming-${index + 1}`,
+  date: `${18 + index} mei`,
+  home,
+  away: teams[(index + 3) % teams.length],
+  venue: index % 2 === 0 ? 'Thuiswedstrijd' : 'Uitwedstrijd',
+}))
+
 const playerNames = [
   ['Brian Brobbey', 'Kenneth Taylor', 'Jorrel Hato', 'Remko Pasveer'],
   [

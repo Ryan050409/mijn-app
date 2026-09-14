@@ -51,6 +51,39 @@
   font-size: 0.875rem;
 }
 
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.theme-toggle {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid #bcccdc;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #102a43;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.theme-toggle:hover,
+.theme-toggle[aria-pressed='true'] {
+  border-color: #087f5b;
+  background: #e9f7f1;
+  color: #087f5b;
+  transform: rotate(-8deg);
+}
+
+.theme-toggle:focus-visible {
+  outline: 3px solid #f08c46;
+  outline-offset: 3px;
+}
+
 .app-layout {
   display: grid;
   grid-template-columns: 13rem minmax(0, 54rem);
@@ -797,6 +830,14 @@ input:focus-visible {
   font-size: 0.65rem;
 }
 
+.player-team-label .team-logo {
+  display: inline-flex;
+  width: 1.35rem;
+  height: 1.55rem;
+  border-radius: 0;
+  background: transparent;
+}
+
 .player-card-main:focus-visible,
 .player-card-actions button:focus-visible,
 .player-toolbar select:focus-visible {
@@ -1085,6 +1126,109 @@ input:focus-visible {
   grid-template-columns: repeat(4, 1fr);
   gap: 0.75rem;
   margin-bottom: 3.5rem;
+}
+
+.dashboard-insights {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 1rem;
+  margin: -1.5rem 0 2.5rem;
+}
+
+.dashboard-panel {
+  min-width: 0;
+  padding: 1.1rem;
+  border: 1px solid #d9e2ec;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  box-shadow: 0 0.5rem 1.5rem rgba(16, 42, 67, 0.05);
+}
+
+.dashboard-panel .section-heading {
+  margin-bottom: 0.9rem;
+}
+
+.dashboard-panel h2 {
+  font-size: 1.3rem;
+}
+
+.form-strip {
+  display: flex;
+  gap: 0.55rem;
+}
+
+.form-pill {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.form-w {
+  background: #d3f9d8;
+  color: #1b6e2f;
+}
+
+.form-g {
+  background: #fff3bf;
+  color: #8a6116;
+}
+
+.form-v {
+  background: #ffe3e3;
+  color: #a61e4d;
+}
+
+.dashboard-note {
+  margin: 0.75rem 0 0;
+  color: #627d98;
+  font-size: 0.78rem;
+}
+
+.upcoming-list {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.upcoming-list li {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: 0.1rem 0.75rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.upcoming-list li:last-child {
+  border-bottom: 0;
+}
+
+.upcoming-list span,
+.upcoming-list small {
+  color: #627d98;
+  font-size: 0.75rem;
+}
+
+.upcoming-list strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: #243b53;
+  font-size: 0.85rem;
+}
+
+.upcoming-list strong b {
+  color: #087f5b;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.upcoming-list small {
+  grid-column: 2;
 }
 
 .stat-card {
@@ -1467,6 +1611,72 @@ input:focus-visible {
   font-weight: 900;
 }
 
+.team-logo {
+  display: inline-flex;
+  width: 2.75rem;
+  height: 3.1rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-logo svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.team-logo-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.team-logo-shield {
+  fill: var(--logo-primary);
+  stroke: var(--logo-primary);
+  stroke-width: 2;
+}
+
+.team-logo-stripe {
+  fill: var(--logo-secondary);
+  opacity: 0.92;
+}
+
+.team-logo-ball {
+  fill: var(--logo-primary);
+  stroke: var(--logo-secondary);
+  stroke-width: 2;
+}
+
+.team-logo text {
+  fill: var(--logo-secondary);
+  font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+  font-size: 0.48rem;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.team-logo-small {
+  width: 2.2rem;
+  height: 2.5rem;
+}
+
+.team-logo-tiny {
+  width: 1.35rem;
+  height: 1.55rem;
+}
+
+.team-logo-tiny .team-logo-ball {
+  stroke-width: 3;
+}
+
+.team-logo-tiny text {
+  font-size: 0.38rem;
+}
+
 .team-page-heading {
   display: flex;
   align-items: end;
@@ -1723,6 +1933,15 @@ input:focus-visible {
 
   .brand {
     font-size: 1rem;
+  }
+
+  .topbar-actions {
+    gap: 0.35rem;
+  }
+
+  .theme-toggle {
+    width: 2.5rem;
+    height: 2.5rem;
   }
 
   .side-nav {
@@ -2141,8 +2360,8 @@ input:focus-visible {
   .modal-backdrop {
     align-items: start;
     overflow-y: auto;
-    padding: max(0.75rem, env(safe-area-inset-top))
-      0.75rem max(0.75rem, env(safe-area-inset-bottom));
+    padding: max(0.75rem, env(safe-area-inset-top)) 0.75rem
+      max(0.75rem, env(safe-area-inset-bottom));
   }
 
   .player-modal,
@@ -2231,6 +2450,207 @@ input:focus-visible {
 
   .player-section-heading h2 {
     font-size: 1.35rem;
+  }
+}
+
+/* Dark mode keeps the same layout while changing contrast and surfaces. */
+.dark-mode {
+  color-scheme: dark;
+  background: #101820;
+  color: #b8c7d6;
+}
+
+.dark-mode .topbar,
+.dark-mode .table-wrap,
+.dark-mode .player-card,
+.dark-mode .settings-list,
+.dark-mode .player-modal,
+.dark-mode .progress-card,
+.dark-mode .detail-panel,
+.dark-mode .team-page-panel,
+.dark-mode .dashboard-panel,
+.dark-mode .standings-summary > div {
+  border-color: #304454;
+  background: #172532;
+  color: #b8c7d6;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.18);
+}
+
+.dark-mode .topbar {
+  background: rgba(16, 24, 32, 0.92);
+}
+
+.dark-mode .theme-toggle {
+  border-color: #40576a;
+  background: #1d2d3a;
+  color: #f6bd60;
+}
+
+.dark-mode .theme-toggle:hover,
+.dark-mode .theme-toggle[aria-pressed='true'] {
+  border-color: #72d6b0;
+  background: #203e3a;
+  color: #72d6b0;
+}
+
+.dark-mode .brand,
+.dark-mode h2,
+.dark-mode .app-header h1,
+.dark-mode .player-card h2,
+.dark-mode .stat-card strong,
+.dark-mode .player-stat-grid strong,
+.dark-mode .detail-panel h3,
+.dark-mode .upcoming-list strong,
+.dark-mode .settings-team-section h2 {
+  color: #f1f5f9;
+}
+
+.dark-mode .season-label,
+.dark-mode .intro,
+.dark-mode .player-stat,
+.dark-mode .setting-row small,
+.dark-mode .date-cell,
+.dark-mode .standings-season,
+.dark-mode .standings-scroll-hint,
+.dark-mode .dashboard-note,
+.dark-mode .upcoming-list span,
+.dark-mode .upcoming-list small,
+.dark-mode .team-directory-card small,
+.dark-mode .team-player-list small,
+.dark-mode .team-match-list span,
+.dark-mode .empty-state {
+  color: #8fa6ba;
+}
+
+.dark-mode .side-nav,
+.dark-mode .nav-button,
+.dark-mode .nav-button span {
+  color: #a9bdcf;
+}
+
+.dark-mode .nav-button:hover,
+.dark-mode .nav-button.is-active {
+  background: #123d35;
+  color: #72d6b0;
+}
+
+.dark-mode .nav-button span {
+  color: #7890a5;
+}
+
+.dark-mode th {
+  background: #203442;
+  color: #a9bdcf;
+}
+
+.dark-mode tbody tr + tr,
+.dark-mode .setting-row + .setting-row,
+.dark-mode .player-card-actions,
+.dark-mode .upcoming-list li,
+.dark-mode .team-player-list li,
+.dark-mode .team-match-list li {
+  border-color: #304454;
+}
+
+.dark-mode .team-button,
+.dark-mode .filter-button,
+.dark-mode .back-button,
+.dark-mode .modal-close,
+.dark-mode .player-card-actions button,
+.dark-mode .setting-row select,
+.dark-mode .match-toolbar input,
+.dark-mode .match-toolbar select,
+.dark-mode .player-controls input,
+.dark-mode .player-controls select,
+.dark-mode .player-toolbar select,
+.dark-mode .form-grid input,
+.dark-mode .form-grid select,
+.dark-mode .favorite-player-panel select {
+  border-color: #40576a;
+  background: #1d2d3a;
+  color: #eef4f8;
+}
+
+.dark-mode .team-button:hover,
+.dark-mode .filter-button:hover,
+.dark-mode .filter-button[aria-pressed='true'],
+.dark-mode .player-card-actions button:hover {
+  border-color: #72d6b0;
+  color: #72d6b0;
+  background: #203e3a;
+}
+
+.dark-mode .player-card-main:hover {
+  background: #1c3440;
+}
+
+.dark-mode .stat-card-featured,
+.dark-mode .player-highlights article,
+.dark-mode .standings-summary > div:first-child {
+  border-color: #277d68;
+  background: #123d35;
+}
+
+.dark-mode .team-panel,
+.dark-mode .detail-scoreboard {
+  background: #3a2c1d;
+}
+
+.dark-mode .team-directory-card:hover,
+.dark-mode .team-directory-card.is-selected {
+  border-color: #72d6b0;
+  background: #123d35;
+}
+
+.dark-mode .standings-table .is-selected-team td,
+.dark-mode .standings-table .is-selected-team th {
+  background: #1b4038;
+}
+
+.dark-mode .player-stat-grid div {
+  background: #203442;
+}
+
+.dark-mode .progress-track {
+  background: #304454;
+}
+
+.dark-mode .settings-team-section {
+  border-color: #304454;
+}
+
+.dark-mode .team-list li {
+  background: #123d35;
+  color: #72d6b0;
+}
+
+.dark-mode .modal-backdrop {
+  background: rgba(3, 8, 12, 0.78);
+}
+
+.dark-mode :is(button, select, input):focus-visible,
+.dark-mode .table-wrap:focus-visible {
+  outline-color: #f6bd60;
+}
+
+@media (max-width: 600px) {
+  .dashboard-insights {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin: -0.75rem 0 1.75rem;
+  }
+
+  .dashboard-panel {
+    padding: 1rem;
+  }
+
+  .form-pill {
+    width: 2.6rem;
+    height: 2.6rem;
+  }
+
+  .upcoming-list li {
+    grid-template-columns: 4.25rem minmax(0, 1fr);
   }
 }
 

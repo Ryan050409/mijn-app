@@ -1,5 +1,6 @@
 import StatsGrid from './StatsGrid'
 import { getStats } from './stats'
+import TeamLogo from './TeamLogo'
 
 function TeamPage({ teams, selectedTeam, matches, players, onSelect }) {
   const stats = getStats(matches, selectedTeam)
@@ -25,9 +26,7 @@ function TeamPage({ teams, selectedTeam, matches, players, onSelect }) {
             aria-pressed={team === selectedTeam}
             onClick={() => onSelect(team)}
           >
-            <span className="team-crest" aria-hidden="true">
-              {team.slice(0, 1)}
-            </span>
+            <TeamLogo team={team} size="small" />
             <span>
               <strong>{team}</strong>
               <small>
